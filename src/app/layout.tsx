@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Verity — Look Beyond the Headline",
-  description: "Media Literacy, Bias, and Propaganda Detection Assistant for the Congressional App Challenge.",
+  title: "Truthoganda — Propaganda & Rhetorical Manipulation Engine",
+  description: "Forensic analysis of propaganda techniques, fear appeals, loaded language, and persuasive coercion.",
 };
 
 export default function RootLayout({
@@ -13,7 +13,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="min-h-screen flex flex-col bg-slate-50 text-slate-900 antialiased">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link 
+          href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,600;0,700;0,800;1,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" 
+          rel="stylesheet" 
+        />
+      </head>
+      <body className="min-h-screen bg-[#fcfbf9] text-[#1c1917] antialiased selection:bg-[#991b1b] selection:text-white">
         {children}
       </body>
     </html>

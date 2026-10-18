@@ -1,154 +1,163 @@
 import { NextRequest, NextResponse } from "next/server";
-import { DEMO_SCENARIOS } from "../../../data/demoScenarios";
-import { analyzeTextOffline } from "../../../lib/offlineAnalyzer";
-import { AnalysisResult } from "../../../types/analysis";
+import { PROPAGANDA_CASE_STUDIES } from "../../../lib/caseStudies.js";
+import { inspectPropagandaTechniques, evaluatePropagandaPosture } from "../../../lib/propagandaEngine.js";
+import { generateCriticalChecklist } from "../../../lib/analysisUtils.js";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { text, url, demoId } = body;
+    const { text, sourceContext, caseStudyId } = body;
 
-    // 1. If a specific demo scenario is requested, serve the verified judge-ready pre-analyzed demo
-    if (demoId) {
-      const scenario = DEMO_SCENARIOS.find(s => s.id === demoId);
-      if (scenario) {
+    // 1. If explicit real-world case study is selected
+    if (caseStudyId) {
+      const match = PROPAGANDA_CASE_STUDIES.find((c: any) => c.id === caseStudyId);
+      if (match) {
         return NextResponse.json({
-          mode: "demo",
-          result: scenario.preAnalyzedResult
+          mode: "case-study",
+          result: {
+            title: match.title,
+            tag: match.tag,
+            sourceContext: match.sourceContext,
+            sourceUrl: match.sourceUrl,
+            sampleText: match.sampleText,
+            ...match.analysis,
+            criticalQuestions: match.analysis.structuralBreakdown.criticalQuestions
+          }
         });
       }
     }
 
     if (!text || typeof text !== "string" || text.trim().length === 0) {
       return NextResponse.json(
-        { error: "Please enter text to analyze." },
+        { error: "Please enter text to inspect for propaganda tactics." },
         { status: 400 }
       );
     }
 
-    const trimmedText = text.trim();
+    const trimmed = text.trim();
 
-    // Check if input matches one of our demo scenario texts exactly
-    const matchingScenario = DEMO_SCENARIOS.find(
-      s => s.sampleText.trim() === trimmedText || trimmedText.includes(s.sampleText.slice(0, 50))
+    // Check if user input matches one of our case studies
+    const matchingStudy = PROPAGANDA_CASE_STUDIES.find(
+      (c: any) => c.sampleText.trim() === trimmed || trimmed.includes(c.sampleText.slice(0, 50))
     );
 
-    if (matchingScenario) {
+    if (matchingStudy) {
       return NextResponse.json({
-        mode: "demo",
-        result: matchingScenario.preAnalyzedResult
+        mode: "case-study",
+        result: {
+          title: matchingStudy.title,
+          tag: matchingStudy.tag,
+          sourceContext: matchingStudy.sourceContext,
+          sourceUrl: matchingStudy.sourceUrl,
+          sampleText: matchingStudy.sampleText,
+          ...matchingStudy.analysis,
+          criticalQuestions: matchingStudy.analysis.structuralBreakdown.criticalQuestions
+        }
       });
     }
 
-    // Check for API credentials
+    // Check for live Gemini API key
     const geminiKey = process.env.GEMINI_API_KEY;
-    const openaiKey = process.env.OPENAI_API_KEY;
-
     if (geminiKey) {
       try {
-        const liveResult = await analyzeWithGemini(trimmedText, url, geminiKey);
+        const liveAiResult = await runLiveGeminiPropagandaAudit(trimmed, sourceContext, geminiKey);
         return NextResponse.json({
-          mode: "live",
-          result: liveResult
+          mode: "live-ai",
+          result: liveAiResult
         });
-      } catch (geminiError) {
-        console.error("Gemini live analysis failed, falling back to local analysis:", geminiError);
-        // Fall back gracefully
-      }
-    } else if (openaiKey) {
-      try {
-        const liveResult = await analyzeWithOpenAI(trimmedText, url, openaiKey);
-        return NextResponse.json({
-          mode: "live",
-          result: liveResult
-        });
-      } catch (openaiError) {
-        console.error("OpenAI live analysis failed, falling back to local analysis:", openaiError);
+      } catch (err) {
+        console.error("Live AI propaganda inspection failed, using local engine:", err);
       }
     }
 
-    // Default offline fallback heuristic analyzer
-    const offlineResult = analyzeTextOffline(trimmedText, url);
+    // Pure JavaScript heuristic propaganda analysis
+    const tactics = inspectPropagandaTechniques(trimmed);
+    const posture = evaluatePropagandaPosture(trimmed, tactics);
+    const criticalQuestions = generateCriticalChecklist(tactics);
+
     return NextResponse.json({
-      mode: "local-heuristic",
-      result: offlineResult
+      mode: "local-engine",
+      result: {
+        title: "Custom Propaganda Inspection",
+        tag: "Live Text Analysis",
+        sourceContext: sourceContext || "Direct User Submission",
+        posture: posture.posture,
+        severity: posture.severity,
+        rhetoricalSlant: posture.rhetoricalSlant,
+        summary: posture.summary,
+        tactics: tactics,
+        structuralBreakdown: {
+          narrativeStrategy: posture.primaryDrivers,
+          omittedFacts: "Unspecified in raw text. Check cross-partisan news registries, independent academic reviews, or government records to verify missing context.",
+          psychologicalLeverage: tactics.length > 0 
+            ? "Exploits emotional urgency, identity grouping, or pejorative moral framing to discourage dispassionate verification."
+            : "Maintains informational distance without emotional blackmail.",
+          criticalQuestions
+        },
+        criticalQuestions
+      }
     });
 
   } catch (error: any) {
-    console.error("Analysis API error:", error);
+    console.error("Propaganda API error:", error);
     return NextResponse.json(
-      { error: "An unexpected error occurred during analysis. Please try again." },
+      { error: "An unexpected error occurred while analyzing propaganda tactics." },
       { status: 500 }
     );
   }
 }
 
-async function analyzeWithGemini(text: string, url: string | undefined, apiKey: string): Promise<AnalysisResult> {
-  const prompt = `You are Verity, an impartial, rigorous media literacy and propaganda analysis assistant designed for the Congressional App Challenge.
-Analyze the following text objectively. Distinguish clearly between:
-- Factual claims vs opinions vs predictions vs unverified assertions.
-- Genuine persuasive rhetoric vs manipulative propaganda techniques (e.g. fear appeals, loaded language, false dilemma, cherry-picked statistics, scapegoating).
-- Neutral tone vs strong persuasive slant.
-- Do NOT make political judgments or tell the user what opinion to hold.
-- Never invent sources, quotes, or statistics.
+async function runLiveGeminiPropagandaAudit(text: string, sourceContext: string | undefined, apiKey: string) {
+  const prompt = `You are Truthoganda, an unsparing, non-partisan forensic propaganda and psychological rhetoric analyst.
+Analyze the following text strictly for PROPAGANDA and MANIPULATION tactics.
+Focus exclusively on identifying:
+- Fear appeals & catastrophizing
+- Loaded language & demonization
+- False dilemmas & manufactured urgency
+- Scapegoating & us-vs-them polarization
+- Cherry-picked statistics & baseline omissions
+- Conspiratorial framing & hidden hand narratives
+- Ad hominem attacks
 
-Text to analyze:
+Text to inspect:
 """${text}"""
-${url ? `URL provided: ${url}` : ""}
+Context/Attribution: ${sourceContext || "None specified"}
 
-Return ONLY a strict, valid JSON object matching this TypeScript interface (no markdown, no backticks, just raw JSON):
+Return ONLY a strict JSON object (no markdown, no backticks, just raw JSON) matching this structure:
 {
-  "id": "gemini-live-${Date.now()}",
-  "overallAssessment": "Supported by Evidence" | "Partially Supported" | "Misleading or Missing Context" | "Unsupported" | "Inconclusive",
-  "confidence": "High" | "Moderate" | "Low",
-  "confidenceExplanation": "concise explanation of why this confidence level was chosen based on available evidence",
-  "summaryExplanation": "2-3 sentences explaining the assessment objectively",
-  "claims": [
+  "title": "Brief Descriptive Title of the Rhetorical Piece",
+  "tag": "e.g. Wartime Rhetoric, Electoral Agitation, Corporate PR, or Neutral Reporting",
+  "sourceContext": "${sourceContext || 'Direct Text Submission'}",
+  "posture": "High Propaganda Density" | "Moderate Rhetorical Persuasion" | "Neutral / Low Propaganda Profile",
+  "severity": "high" | "moderate" | "low",
+  "rhetoricalSlant": "Concise classification of tone and slant",
+  "summary": "2-3 sentences explaining the core rhetorical agenda and technique composition",
+  "tactics": [
     {
-      "id": "claim-1",
-      "claim": "specific claim extracted from text",
-      "assessment": "Supported by Evidence" | "Partially Supported" | "Misleading or Missing Context" | "Unsupported" | "Inconclusive",
-      "category": "verified_fact" | "opinion" | "prediction" | "unverified_claim",
-      "explanation": "concise explanation",
-      "supportingEvidence": ["evidence item"],
-      "contradictingEvidence": ["contradicting evidence item"],
-      "confidence": "High" | "Moderate" | "Low",
-      "sources": [
-        {
-          "title": "Title of credible real source if known",
-          "publisher": "Reputable publisher or gov agency",
-          "publicationDate": "Year or date",
-          "url": "https://...",
-          "relevance": "How it relates",
-          "stance": "supports" | "contradicts" | "contextualizes"
-        }
-      ]
+      "id": "tactic-unique-id",
+      "name": "Technique Name",
+      "category": "Emotional Coercion | Logical Distortion | Linguistic Bias | Social Division | Disinformation Strategy",
+      "excerpt": "Exact quotation from text demonstrating this tactic",
+      "indicator": "Brief signature of this tactic",
+      "explanation": "Why this specific excerpt constitutes propaganda",
+      "influence": "How it psychologically impacts or manipulates the reader"
     }
   ],
-  "propagandaTechniques": [
-    {
-      "id": "tech-1",
-      "name": "Technique name (e.g. Loaded Language, Fear Appeal)",
-      "excerpt": "exact phrase from text",
-      "whyItFits": "why this matches the technique",
-      "impactExplanation": "how it influences the reader"
-    }
-  ],
-  "biasAndFraming": {
-    "emotionalTone": "e.g. Highly urgent and confrontational",
-    "persuasiveStyle": "e.g. Strongly Persuasive / Advocacy",
-    "emphasizedPerspectives": "what viewpoints are featured",
-    "omittedContext": "what counter-evidence or context is missing",
-    "investigationGuidance": "practical steps for the reader to verify"
+  "structuralBreakdown": {
+    "narrativeStrategy": "High-level description of the persuasion strategy",
+    "omittedFacts": "Key context, baselines, or counter-perspectives omitted by the author",
+    "psychologicalLeverage": "Specific human instincts or fears targeted (e.g., survival fear, parental panic, tribal loyalty)",
+    "criticalQuestions": [
+      "Targeted critical thinking question 1",
+      "Targeted critical thinking question 2",
+      "Targeted critical thinking question 3"
+    ]
   },
-  "criticalThinkingQuestions": [
-    "Question 1 tailored to text",
+  "criticalQuestions": [
+    "Question 1",
     "Question 2",
     "Question 3"
-  ],
-  "sources": [],
-  "isDemo": false,
-  "disclaimer": "LIVE AI ANALYSIS. Generated using Gemini LLM. AI evaluations may make mistakes; always inspect primary documents and source citations."
+  ]
 }`;
 
   const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
@@ -158,47 +167,16 @@ Return ONLY a strict, valid JSON object matching this TypeScript interface (no m
       contents: [{ parts: [{ text: prompt }] }],
       generationConfig: {
         responseMimeType: "application/json",
-        temperature: 0.2
+        temperature: 0.1
       }
     })
   });
 
   if (!response.ok) {
-    throw new Error(`Gemini API error status: ${response.status}`);
+    throw new Error(`Gemini API error: ${response.status}`);
   }
 
   const data = await response.json();
   const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!rawText) throw new Error("Empty response from Gemini API");
-
-  return JSON.parse(rawText) as AnalysisResult;
-}
-
-async function analyzeWithOpenAI(text: string, url: string | undefined, apiKey: string): Promise<AnalysisResult> {
-  const prompt = `You are Verity, an impartial, rigorous media literacy and propaganda analysis assistant.
-Analyze this text and output JSON matching the required schema:
-Text: """${text}"""
-${url ? `URL: ${url}` : ""}`;
-
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${apiKey}`
-    },
-    body: JSON.stringify({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: prompt }],
-      response_format: { type: "json_object" },
-      temperature: 0.2
-    })
-  });
-
-  if (!response.ok) {
-    throw new Error(`OpenAI API error status: ${response.status}`);
-  }
-
-  const data = await response.json();
-  const rawText = data.choices[0].message.content;
-  return JSON.parse(rawText) as AnalysisResult;
+  return JSON.parse(rawText);
 }

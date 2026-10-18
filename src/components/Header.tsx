@@ -1,52 +1,30 @@
 import React from "react";
-import { Shield, Sparkles, Database } from "lucide-react";
 
-interface HeaderProps {
-  mode: "live" | "demo" | "heuristic";
-  hasKeys: boolean;
-}
-
-export const Header: React.FC<HeaderProps> = ({ mode, hasKeys }) => {
+export const Header: React.FC = () => {
   return (
-    <header className="border-b border-slate-200 bg-white/80 backdrop-blur sticky top-0 z-40">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-lg bg-blue-900 text-white flex items-center justify-center font-bold text-xl shadow-sm tracking-tight">
-            V
-          </div>
-          <div>
-            <div className="flex items-center space-x-2">
-              <span className="font-semibold text-xl tracking-tight text-slate-900">Verity</span>
-              <span className="text-xs bg-slate-100 text-slate-600 font-medium px-2 py-0.5 rounded-full border border-slate-200">
-                Civic Tech
-              </span>
-            </div>
-            <p className="text-xs text-slate-500 hidden sm:block">Congressional App Challenge Demonstration</p>
-          </div>
+    <header className="border-b border-[#e7e5e4] bg-[#fcfbf9]">
+      <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+        <div className="flex items-baseline space-x-3">
+          <span className="font-serif text-2xl font-extrabold tracking-tight text-[#991b1b]">
+            Truthoganda
+          </span>
+          <span className="text-xs text-[#78716c] font-medium border-l border-[#e7e5e4] pl-3">
+            Propaganda & Rhetorical Manipulation Engine
+          </span>
         </div>
 
-        <div className="flex items-center space-x-3">
-          {mode === "demo" && (
-            <div className="flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-800 border border-amber-200 shadow-sm">
-              <Database className="w-3.5 h-3.5 text-amber-600" />
-              <span>Judge-Ready Demo Mode (Offline)</span>
-            </div>
-          )}
-
-          {mode === "live" && (
-            <div className="flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-800 border border-emerald-200 shadow-sm">
-              <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Live AI Analysis Active</span>
-            </div>
-          )}
-
-          {mode === "heuristic" && (
-            <div className="flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200 shadow-sm">
-              <Shield className="w-3.5 h-3.5 text-slate-500" />
-              <span>Local Heuristic Mode</span>
-            </div>
-          )}
-        </div>
+        <nav className="flex items-center space-x-6 text-xs font-medium text-[#78716c]">
+          <a href="#dossier" className="hover:text-[#1c1917] transition-colors">
+            Case Studies
+          </a>
+          <a href="#inspector" className="hover:text-[#1c1917] transition-colors">
+            Analyze Text
+          </a>
+          <span className="text-[#a8a29e]">|</span>
+          <span className="text-[#991b1b] font-semibold">
+            Forensic Rhetoric
+          </span>
+        </nav>
       </div>
     </header>
   );
