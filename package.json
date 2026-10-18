@@ -1,26 +1,28 @@
 {
-  "name": "truthlens-ai",
+  "name": "firstfile",
   "version": "1.0.0",
-  "description": "",
+  "description": "FirstFile — Your first tax return, simplified. Teen-first tax education platform for first-time filers.",
   "main": "index.js",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "test": "node --test src/lib/*.test.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/akshayjawalkar78-ai/truthlens-ai.git"
   },
-  "keywords": [],
+  "keywords": [
+    "taxes",
+    "education",
+    "first-time-filer",
+    "teen-finance",
+    "civic-tech"
+  ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "type": "module",
-  "bugs": {
-    "url": "https://github.com/akshayjawalkar78-ai/truthlens-ai/issues"
-  },
-  "homepage": "https://github.com/akshayjawalkar78-ai/truthlens-ai#readme",
   "dependencies": {
     "clsx": "^2.1.1",
     "lucide-react": "^1.59.0",
@@ -30,12 +32,8 @@
     "tailwind-merge": "^3.7.0"
   },
   "devDependencies": {
-    "@types/node": "^26.6.5",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
     "autoprefixer": "^10.6.1",
     "postcss": "^8.5.31",
-    "tailwindcss": "^3.4.17",
-    "typescript": "5.6.3"
+    "tailwindcss": "^3.4.17"
   }
 }
