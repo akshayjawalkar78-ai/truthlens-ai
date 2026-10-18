@@ -13,24 +13,7 @@ export function queryTaxExplanation(query = "") {
 
   const cleanQuery = query.toLowerCase().trim();
 
-  // 1. Search glossary terms
-  const matchedTerm = GLOSSARY_TERMS.find(t => 
-    cleanQuery.includes(t.term.toLowerCase()) || 
-    t.term.toLowerCase().includes(cleanQuery) ||
-    cleanQuery.includes(t.id)
-  );
-
-  if (matchedTerm) {
-    return {
-      answer: `${matchedTerm.term}: ${matchedTerm.definition} Why it matters: ${matchedTerm.whyItMatters} Example: ${matchedTerm.example}`,
-      sourceTitle: matchedTerm.sourceTitle,
-      sourceUrl: matchedTerm.sourceUrl,
-      confidenceLabel: "reviewed",
-      mode: "offline"
-    };
-  }
-
-  // 2. Specific teen FAQ topics
+  // 1. Specific teen FAQ topics
   if (cleanQuery.includes("dependent") || cleanQuery.includes("parent")) {
     return {
       answer: "Being claimed as a dependent on your parents' tax return DOES NOT stop you from filing your own return. If an employer took federal taxes out of your paychecks (Box 2 on your W-2), filing your own Form 1040 is the ONLY way to get that money back as a tax refund. You simply check the box on your return stating: 'Someone can claim you as a dependent.'",
@@ -46,6 +29,23 @@ export function queryTaxExplanation(query = "") {
       answer: "A tax refund is not free bonus money or lottery winnings. It is simply your own money being returned to you because your employer withheld more in estimated income taxes throughout the year than you actually owed. If you earned less than the single standard deduction, your federal income tax liability is usually $0, meaning 100% of the federal income tax withheld from your paychecks is refunded to you.",
       sourceTitle: "IRS Where's My Refund?",
       sourceUrl: "https://www.irs.gov/refunds",
+      confidenceLabel: "reviewed",
+      mode: "offline"
+    };
+  }
+
+  // 2. Search glossary terms
+  const matchedTerm = GLOSSARY_TERMS.find(t => 
+    cleanQuery === t.term.toLowerCase() || 
+    t.term.toLowerCase() === cleanQuery ||
+    cleanQuery === t.id
+  );
+
+  if (matchedTerm) {
+    return {
+      answer: `${matchedTerm.term}: ${matchedTerm.definition} Why it matters: ${matchedTerm.whyItMatters} Example: ${matchedTerm.example}`,
+      sourceTitle: matchedTerm.sourceTitle,
+      sourceUrl: matchedTerm.sourceUrl,
       confidenceLabel: "reviewed",
       mode: "offline"
     };
