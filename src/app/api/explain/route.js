@@ -1,4 +1,4 @@
-import { queryTaxExplanation } from "../../lib/taxContent.js";
+import { queryTaxExplanation } from "../../../lib/taxContent.js";
 
 /**
  * Server-side route for tax explanations.
