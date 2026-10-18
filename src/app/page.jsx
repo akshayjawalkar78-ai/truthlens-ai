@@ -81,7 +81,7 @@ export default function HomePage() {
           <div className="mt-6 flex flex-wrap gap-3">
             <a
               href="#questionnaire"
-              className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs rounded-lg transition-colors"
+              className="px-5 py-2.5 bg-primary-500 hover:bg-primary-600 text-white font-medium text-xs rounded-lg transition-colors"
             >
               Build My Tax Checklist
             </a>
