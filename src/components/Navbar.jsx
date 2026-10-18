@@ -1,3 +1,7 @@
+import React from "react";
+import Link from "next/link";
+import { HomeIcon, PaycheckIcon, PracticeIcon, LearnIcon, ResourcesIcon } from "./icons.jsx";
+
 export function Navbar({ activeTab = "" }) {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
 
