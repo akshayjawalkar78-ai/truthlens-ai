@@ -1,4 +1,4 @@
-import { DemoScenario } from "@/types/analysis";
+import { DemoScenario } from "../types/analysis";
 
 export const DEMO_SCENARIOS: DemoScenario[] = [
   {

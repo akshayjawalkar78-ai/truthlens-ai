@@ -1,5 +1,4 @@
-import React from "react";
-import { DEMO_SCENARIOS } from "@/data/demoScenarios";
+import { DEMO_SCENARIOS } from "../data/demoScenarios";
 import { Sparkles, ArrowRight, BookOpen } from "lucide-react";
 
 interface ScenarioSelectorProps {

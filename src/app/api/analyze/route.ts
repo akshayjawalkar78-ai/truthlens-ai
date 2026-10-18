@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { DEMO_SCENARIOS } from "@/data/demoScenarios";
-import { analyzeTextOffline } from "@/lib/offlineAnalyzer";
-import { AnalysisResult } from "@/types/analysis";
+import { DEMO_SCENARIOS } from "../../../data/demoScenarios";
+import { analyzeTextOffline } from "../../../lib/offlineAnalyzer";
+import { AnalysisResult } from "../../../types/analysis";
 
 export async function POST(req: NextRequest) {
   try {

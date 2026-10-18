@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { Header } from "@/components/Header";
-import { LandingSection } from "@/components/LandingSection";
-import { ScenarioSelector } from "@/components/ScenarioSelector";
-import { AnalysisWorkspace } from "@/components/AnalysisWorkspace";
-import { ResultsDashboard } from "@/components/ResultsDashboard";
-import { DEMO_SCENARIOS } from "@/data/demoScenarios";
-import { AnalysisResult } from "@/types/analysis";
+import { Header } from "../components/Header";
+import { LandingSection } from "../components/LandingSection";
+import { ScenarioSelector } from "../components/ScenarioSelector";
+import { AnalysisWorkspace } from "../components/AnalysisWorkspace";
+import { ResultsDashboard } from "../components/ResultsDashboard";
+import { DEMO_SCENARIOS } from "../data/demoScenarios";
+import { AnalysisResult } from "../types/analysis";
 
 export default function Home() {
   const [inputText, setInputText] = useState("");

@@ -12,7 +12,7 @@ import {
   BookOpen,
   Info
 } from "lucide-react";
-import { AnalysisResult, AssessmentType, ConfidenceLevel } from "@/types/analysis";
+import { AnalysisResult, AssessmentType, ConfidenceLevel } from "../types/analysis";
 
 interface ResultsDashboardProps {
   result: AnalysisResult;

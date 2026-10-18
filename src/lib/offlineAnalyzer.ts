@@ -1,4 +1,4 @@
-import { AnalysisResult, ClaimAssessment, PropagandaTechnique, BiasFraming } from "@/types/analysis";
+import { AnalysisResult, ClaimAssessment, PropagandaTechnique, BiasFraming } from "../types/analysis";
 
 interface HeuristicRule {
   name: string;
