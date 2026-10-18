@@ -7,13 +7,16 @@ export default {
   theme: {
     extend: {
       colors: {
-        navy: {
-          50: "#f0f4f8",
-          100: "#d9e2ec",
-          200: "#bcccdc",
-          800: "#102a43",
-          900: "#0b1d33",
+        primary: {
+          500: "#0E7C7B",
+          600: "#0A6A69",
         },
+        accent: {
+          500: "#F9A825",
+          600: "#C7911F",
+        },
+        background: "#F9FAFB",
+        foreground: "#1F2937",
       },
     },
   },
