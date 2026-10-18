@@ -1,3 +1,4 @@
+'use client';
 import { AppShell } from "../../components/AppShell.jsx";
 import { OFFICIAL_RESOURCES } from "../../data/resources.js";
 
