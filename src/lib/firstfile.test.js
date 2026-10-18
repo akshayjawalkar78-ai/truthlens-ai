@@ -67,5 +67,5 @@ test("queryTaxExplanation retrieves verified offline explanations for dependents
   assert.ok(dependentQuery.answer.includes("DOES NOT stop you from filing"));
 
   const refundQuery = queryTaxExplanation("What is a tax refund?");
-  assert.ok(refundQuery.answer.includes("prepayments"));
+  assert.ok(refundQuery.answer.includes("returned to you"));
 });

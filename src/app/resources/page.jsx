@@ -1,5 +1,5 @@
-import { AppShell } from "../components/AppShell.jsx";
-import { OFFICIAL_RESOURCES } from "../data/resources.js";
+import { AppShell } from "../../components/AppShell.jsx";
+import { OFFICIAL_RESOURCES } from "../../data/resources.js";
 
 export default function ResourcesPage() {
   return (

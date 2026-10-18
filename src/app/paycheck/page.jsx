@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { AppShell } from "../components/AppShell.jsx";
-import { calculatePaycheck } from "../lib/calculator.js";
+import { AppShell } from "../../components/AppShell.jsx";
+import { calculatePaycheck } from "../../lib/calculator.js";
 
 export default function PaycheckPage() {
   const [mode, setMode] = useState("hourly"); // "hourly" or "salary"

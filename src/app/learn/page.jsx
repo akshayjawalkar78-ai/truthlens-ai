@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { AppShell } from "../components/AppShell.jsx";
-import { GLOSSARY_TERMS } from "../data/glossary.js";
-import { QUIZ_QUESTIONS } from "../data/quiz.js";
+import { AppShell } from "../../components/AppShell.jsx";
+import { GLOSSARY_TERMS } from "../../data/glossary.js";
+import { QUIZ_QUESTIONS } from "../../data/quiz.js";
 
 export default function LearnPage() {
   const [activeTab, setActiveTab] = useState("glossary"); // "glossary" or "quiz"

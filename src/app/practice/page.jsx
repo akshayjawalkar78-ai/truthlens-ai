@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AppShell } from "../components/AppShell.jsx";
+import { AppShell } from "../../components/AppShell.jsx";
 
 const W2_BOXES = [
   {
