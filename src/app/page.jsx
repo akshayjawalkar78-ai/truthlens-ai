@@ -84,7 +84,7 @@ export default function HomePage() {
   }, [answers, completedItems, step, activeScenarioId, hydrated]);
 
   const progressValue = checklist.items.length
-    ? Math.round((Object.values(completedItems).filter(Boolean).length / checklist.items.length) * 100)
+    ? Math.round((checklist.items.filter((item) => completedItems[item.id]).length / checklist.items.length) * 100)
     : 0;
 
   const handleToggleItem = (id) => {
@@ -101,8 +101,13 @@ export default function HomePage() {
 
   const handleUpdateAnswer = (field, value) => {
     const updated = { ...answers, [field]: value };
+    const nextChecklist = generateChecklist(updated);
+    const activeItemIds = new Set(nextChecklist.items.map((item) => item.id));
     setAnswers(updated);
-    setChecklist(generateChecklist(updated));
+    setChecklist(nextChecklist);
+    setCompletedItems((previous) => Object.fromEntries(
+      Object.entries(previous).filter(([id, isComplete]) => isComplete && activeItemIds.has(id))
+    ));
   };
 
   const handleToggleArrayItem = (field, val) => {
@@ -297,6 +302,38 @@ export default function HomePage() {
               <h3 className="mt-4 text-lg font-bold text-[#123C32]">{item.heading}</h3>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="mt-16">
+        <div className="mb-5">
+          <span className="section-kicker">Start with an example</span>
+          <h2 className="mt-4 text-3xl font-black tracking-[-0.05em] text-[#123C32]">Try a student scenario</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-[#41514A]">Load fictional answers into the questionnaire to see how different work situations shape a learning checklist.</p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {PRELOADED_SCENARIOS.map((scenario) => {
+            const isActive = activeScenarioId === scenario.id;
+            return (
+              <button
+                key={scenario.id}
+                type="button"
+                onClick={() => handleLoadScenario(scenario)}
+                aria-pressed={isActive}
+                className={`flex min-h-52 flex-col rounded-[1.5rem] border p-4 text-left transition hover:-translate-y-0.5 hover:shadow-soft ${
+                  isActive ? "border-[#176B52] bg-[#F2FAF5]" : "border-[#D9E7DF] bg-white"
+                }`}
+              >
+                <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#176B52]">{scenario.badge}</span>
+                <span className="mt-3 text-lg font-bold leading-6 text-[#123C32]">{scenario.title}</span>
+                <span className="mt-2 flex-1 text-sm leading-6 text-[#52615A]">{scenario.description}</span>
+                <span className="mt-4 flex items-center justify-between border-t border-[#E8EDE7] pt-3 text-xs font-bold text-[#176B52]">
+                  {isActive ? "Loaded into checklist" : "Use this scenario"}
+                  <span aria-hidden="true">→</span>
+                </span>
+              </button>
+            );
+          })}
         </div>
       </section>
 

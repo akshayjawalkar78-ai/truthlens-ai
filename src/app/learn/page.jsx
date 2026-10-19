@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { AppShell } from "../../components/AppShell.jsx";
 import { GLOSSARY_TERMS } from "../../data/glossary.js";
 import { QUIZ_QUESTIONS } from "../../data/quiz.js";
+import { gradeQuiz } from "../../lib/quiz.js";
 
 const inferCategory = (term) => {
   const value = term.toLowerCase();
@@ -41,6 +42,7 @@ export default function LearnPage() {
   }, [searchQuery, selectedCategory]);
 
   const currentQ = QUIZ_QUESTIONS[currentQuestionIdx];
+  const quizResults = gradeQuiz(QUIZ_QUESTIONS, selectedAnswers);
 
   const handleSelectOption = (idx) => {
     if (showExplanation) return;
@@ -62,14 +64,6 @@ export default function LearnPage() {
     setSelectedAnswers({});
     setShowExplanation(false);
     setQuizFinished(false);
-  };
-
-  const calculateScore = () => {
-    let score = 0;
-    QUIZ_QUESTIONS.forEach((q, idx) => {
-      if (selectedAnswers[idx] === q.correctIndex) score += 1;
-    });
-    return score;
   };
 
   const toggleTerm = (id) => {
@@ -206,6 +200,19 @@ export default function LearnPage() {
                   </span>
                 </div>
 
+                <div aria-label={`Quiz progress: question ${currentQuestionIdx + 1} of ${QUIZ_QUESTIONS.length}`}>
+                  <div className="mb-2 flex justify-between text-xs font-semibold text-[#6F7C74]">
+                    <span>Quiz progress</span>
+                    <span>{currentQuestionIdx + 1} / {QUIZ_QUESTIONS.length}</span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-[#E8EDE7]">
+                    <div
+                      className="h-full rounded-full bg-[#176B52] transition-[width] duration-300"
+                      style={{ width: `${((currentQuestionIdx + 1) / QUIZ_QUESTIONS.length) * 100}%` }}
+                    />
+                  </div>
+                </div>
+
                 <h3 className="text-2xl font-black tracking-[-0.04em] text-[#123C32]">{currentQ.question}</h3>
 
                 <div className="space-y-3">
@@ -258,17 +265,63 @@ export default function LearnPage() {
                 )}
               </div>
             ) : (
-              <div className="py-8 text-center">
-                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#6F7C74]">Quiz complete</p>
-                <h3 className="mt-4 text-4xl font-black tracking-[-0.06em] text-[#123C32]">
-                  {calculateScore()} / {QUIZ_QUESTIONS.length}
-                </h3>
-                <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#41514A]">
-                  Great effort. A few tax ideas are tricky at first, and the goal here is confidence, not perfection.
-                </p>
-                <button type="button" onClick={handleRestartQuiz} className="primary-btn mt-6 h-11 px-5 text-sm">
-                  Retake quiz
-                </button>
+              <div className="space-y-7">
+                <div className="rounded-[1.5rem] bg-[#F6FBF8] p-5 text-center sm:p-7">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#6F7C74]">Quiz results</p>
+                  <h3 className="mt-3 text-4xl font-black tracking-[-0.06em] text-[#123C32]">
+                    {quizResults.correct} of {quizResults.total} correct
+                  </h3>
+                  <p className="mt-2 text-lg font-bold text-[#176B52]">{quizResults.percentage}%</p>
+                  <div className="mx-auto mt-4 h-2 max-w-sm overflow-hidden rounded-full bg-[#E8EDE7]">
+                    <div className="h-full rounded-full bg-[#176B52] transition-[width] duration-500" style={{ width: `${quizResults.percentage}%` }} />
+                  </div>
+                  <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-[#41514A]">
+                    {quizResults.percentage === 100
+                      ? "Excellent work. You matched every answer correctly. Review the explanations to reinforce why each one fits."
+                      : quizResults.percentage >= 60
+                        ? "A solid start. Review the questions you missed to strengthen your tax knowledge."
+                        : "Every question is a learning opportunity. Review the explanations, then try again when you are ready."}
+                  </p>
+                  <button type="button" onClick={handleRestartQuiz} className="primary-btn mt-5 h-11 px-5 text-sm">
+                    Retake quiz
+                  </button>
+                </div>
+
+                <div>
+                  <div className="mb-4">
+                    <h4 className="text-xl font-black tracking-[-0.03em] text-[#123C32]">Answer review</h4>
+                    <p className="mt-1 text-sm text-[#6F7C74]">Compare each response with the correct answer and its explanation.</p>
+                  </div>
+                  <div className="space-y-4">
+                    {quizResults.results.map((result, index) => (
+                      <article key={result.id} className={`rounded-[1.25rem] border p-4 sm:p-5 ${result.isCorrect ? "border-[#CDE7D7] bg-[#FAFDFC]" : "border-[#E8EDE7] bg-white"}`}>
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#6F7C74]">
+                            Question {index + 1} · {result.scenario}
+                          </span>
+                          <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] ${result.isCorrect ? "bg-[#DDF3E7] text-[#176B52]" : "bg-[#FFF1D0] text-[#7A5E1F]"}`}>
+                            {result.isCorrect ? "Correct" : "Review"}
+                          </span>
+                        </div>
+                        <p className="mt-3 text-base font-bold leading-6 text-[#123C32]">{result.question}</p>
+                        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                          <div className="rounded-xl border border-[#E8EDE7] bg-white p-3">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#6F7C74]">Your answer</p>
+                            <p className="mt-1 text-sm leading-6 text-[#41514A]">{result.selectedAnswer ?? "No answer recorded"}</p>
+                          </div>
+                          <div className="rounded-xl border border-[#CDE7D7] bg-[#F3FAF6] p-3">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#176B52]">Correct answer</p>
+                            <p className="mt-1 text-sm font-semibold leading-6 text-[#123C32]">{result.correctAnswer}</p>
+                          </div>
+                        </div>
+                        <p className="mt-4 text-sm leading-6 text-[#41514A]">{result.explanation}</p>
+                        <a href={result.sourceUrl} target="_blank" rel="noreferrer" className="mt-3 inline-flex text-xs font-semibold text-[#176B52] hover:underline">
+                          {result.sourceTitle} ↗
+                        </a>
+                      </article>
+                    ))}
+                  </div>
+                </div>
               </div>
             )}
           </div>

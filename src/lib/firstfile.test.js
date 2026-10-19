@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { calculatePaycheck } from "./calculator.js";
 import { generateChecklist } from "./checklist.js";
 import { queryTaxExplanation } from "./taxContent.js";
+import { gradeQuiz } from "./quiz.js";
 
 test("calculatePaycheck calculates FICA and take-home pay correctly", () => {
   const result = calculatePaycheck({
@@ -68,4 +69,57 @@ test("queryTaxExplanation retrieves verified offline explanations for dependents
 
   const refundQuery = queryTaxExplanation("What is a tax refund?");
   assert.ok(refundQuery.answer.includes("returned to you"));
+});
+
+test("gradeQuiz reports correct, incorrect, and unanswered responses accurately", () => {
+  const questions = [
+    {
+      id: "one",
+      scenario: "W-2 wages",
+      question: "Which form reports employee wages?",
+      options: ["Form 1099-NEC", "Form W-2"],
+      correctIndex: 1,
+      explanation: "Employers report wages on Form W-2.",
+      sourceTitle: "About Form W-2",
+      sourceUrl: "https://www.irs.gov/forms-pubs/about-form-w-2",
+    },
+    {
+      id: "two",
+      scenario: "Refunds",
+      question: "What is a tax refund?",
+      options: ["A returned overpayment", "A bonus"],
+      correctIndex: 0,
+      explanation: "A refund returns excess payments.",
+      sourceTitle: "IRS Refunds",
+      sourceUrl: "https://www.irs.gov/refunds",
+    },
+  ];
+
+  const result = gradeQuiz(questions, { 0: 1, 1: 1 });
+
+  assert.equal(result.total, 2);
+  assert.equal(result.answered, 2);
+  assert.equal(result.correct, 1);
+  assert.equal(result.percentage, 50);
+  assert.equal(result.results[0].selectedAnswer, "Form W-2");
+  assert.equal(result.results[0].isCorrect, true);
+  assert.equal(result.results[1].selectedAnswer, "A bonus");
+  assert.equal(result.results[1].correctAnswer, "A returned overpayment");
+  assert.equal(result.results[1].isCorrect, false);
+});
+
+test("gradeQuiz handles unanswered questions and empty quizzes", () => {
+  const result = gradeQuiz([{
+    id: "one",
+    scenario: "Wages",
+    question: "Which form reports wages?",
+    options: ["W-2", "1099"],
+    correctIndex: 0,
+  }]);
+
+  assert.equal(result.answered, 0);
+  assert.equal(result.correct, 0);
+  assert.equal(result.percentage, 0);
+  assert.equal(result.results[0].selectedAnswer, null);
+  assert.equal(gradeQuiz([]).percentage, 0);
 });

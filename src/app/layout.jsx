@@ -1,3 +1,5 @@
+import "./globals.css";
+
 export const metadata = {
   title: "FirstFile — Your first tax return. A clearer first step.",
   description: "FirstFile helps teens and first-time filers understand taxes through friendly learning tools, sample forms, checklists, and official resources.",
