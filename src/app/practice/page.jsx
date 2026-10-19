@@ -53,7 +53,7 @@ const W2_BOXES = [
     name: "Wages, tips, other compensation",
     value: "$3,250.00",
     description: "The total taxable wages you earned from this employer during the calendar year. This is the primary figure entered on Line 1a of your Form 1040.",
-    significance: "If this number is below the standard deduction threshold for dependents, you will generally owe $0 in federal income taxes."
+    significance: "Box 1 helps determine taxable income, but it cannot by itself establish whether a return is required or what tax is owed. Other income and tax-year rules matter."
   },
   {
     box: "Box 2",
@@ -74,14 +74,14 @@ const W2_BOXES = [
     name: "Social Security tax withheld",
     value: "$201.50",
     description: "Exactly 6.2% of your Social Security wages ($3,250 × 0.062 = $201.50).",
-    significance: "Mandatory FICA tax required by federal law. Unlike federal income tax in Box 2, Social Security taxes are generally not refunded."
+    significance: "This is Social Security payroll tax, separate from federal income tax withholding in Box 2. It is generally not returned through an ordinary income-tax refund."
   },
   {
     box: "Box 5",
     name: "Medicare wages and tips",
     value: "$3,250.00",
     description: "The total wages subject to the 1.45% Medicare payroll tax.",
-    significance: "All employee wages are subject to Medicare tax with no annual wage cap."
+    significance: "Box 5 reports wages subject to Medicare tax. The Medicare wage base differs from Social Security; additional Medicare rules can apply at higher earnings."
   },
   {
     box: "Box 6",

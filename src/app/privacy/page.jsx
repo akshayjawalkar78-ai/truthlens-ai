@@ -11,12 +11,16 @@ const privacyPrinciples = [
     body: "All W-2 and scenario exercises use fictional information only. Nothing in the practice tools is designed to process your actual tax information.",
   },
   {
-    title: "Local browser processing",
-    body: "The checklist responses and paycheck calculations run in your browser. The app does not depend on a database or account system to provide the educational experience.",
+    title: "Local browser storage",
+    body: "Checklist progress and quiz-score summaries are saved in this browser's local storage so they remain available on this device. They are not sent to a FirstFile account or database. Clearing this browser's site data removes them.",
   },
   {
-    title: "Plain-language educational use only",
-    body: "This product is designed to teach budgeting and filing basics. It is not a legal filing service or a replacement for official IRS guidance.",
+    title: "Optional AI explanations",
+    body: "The explainer works offline without an API key. If an administrator configures an AI key, submitted question text is sent to Google's Gemini API for a response. Do not include personal, tax, or financial details in questions.",
+  },
+  {
+    title: "Educational use only",
+    body: "This product teaches tax basics. It is not a filing service or a replacement for current official IRS guidance or professional advice.",
   },
 ];
 

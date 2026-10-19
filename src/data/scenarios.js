@@ -30,8 +30,6 @@ export const PRELOADED_SCENARIOS = [
         }
       ],
       selfEmploymentProfit: 0,
-      estimatedRefund: 195.00,
-      taxLiability: 0.00
     }
   },
   {
@@ -52,9 +50,6 @@ export const PRELOADED_SCENARIOS = [
     mockData: {
       w2s: [],
       selfEmploymentProfit: 1400.00,
-      estimatedSelfEmploymentTax: 197.80, // approx 15.3% on 92.35% of net profit
-      taxLiability: 197.80,
-      estimatedRefund: 0.00
     }
   },
   {
@@ -86,9 +81,6 @@ export const PRELOADED_SCENARIOS = [
         }
       ],
       selfEmploymentProfit: 850.00,
-      estimatedSelfEmploymentTax: 120.10,
-      taxLiability: 120.10,
-      estimatedRefund: 19.90 // 140 withheld minus 120.10 tax owed
     }
   },
   {
@@ -109,8 +101,6 @@ export const PRELOADED_SCENARIOS = [
     mockData: {
       w2s: [],
       selfEmploymentProfit: 0,
-      estimatedRefund: 0,
-      taxLiability: 0
     }
   }
 ];

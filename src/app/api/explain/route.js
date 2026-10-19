@@ -59,7 +59,7 @@ Return ONLY a JSON object:
   "answer": "Plain English educational explanation",
   "sourceTitle": "IRS Publication 17 / Form 1040 Guide",
   "sourceUrl": "https://www.irs.gov/publications/p17",
-  "confidenceLabel": "reviewed",
+  "confidenceLabel": "ai-generated",
   "mode": "ai"
 }`;
 

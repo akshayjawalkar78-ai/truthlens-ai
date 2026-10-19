@@ -15,6 +15,16 @@ export function generateChecklist(answers = {}) {
   } = answers;
 
   const items = [];
+  const stateNames = {
+    CA: "California",
+    TX: "Texas",
+    NY: "New York",
+    FL: "Florida",
+    IL: "Illinois",
+    OH: "Ohio",
+    PA: "Pennsylvania",
+    OTHER: "your state",
+  };
 
   // 1. Core Document Gathering Item
   if (documents.includes("w2") || incomeTypes.includes("w2-wages")) {
@@ -22,7 +32,7 @@ export function generateChecklist(answers = {}) {
       id: "gather-w2",
       title: "Collect Your Form W-2 from Each Employer",
       category: "Documents",
-      description: "Employers are required to send your Form W-2 by January 31. Check your work email, online employee portal (like ADP, Gusto, or Paychex), or physical mailbox.",
+      description: "Employers generally furnish Form W-2 by January 31 of the following year. Check your work email, employee portal, or mailbox; timing can vary in some circumstances.",
       status: "action-required",
       whyItMatters: "Box 1 (total wages) and Box 2 (federal tax withheld) are the two primary numbers needed to file your Form 1040.",
       actionLink: "/practice?tab=w2-lab",
@@ -36,7 +46,7 @@ export function generateChecklist(answers = {}) {
       id: "tally-1099-income",
       title: "Calculate Total Freelance or Gig Earnings",
       category: "Self-Employment",
-      description: "If you made $400 or more in net self-employment earnings, you must file Schedule C and pay 15.3% Self-Employment Tax (Social Security & Medicare).",
+      description: "Net earnings of $400 or more from self-employment generally trigger a federal filing requirement and self-employment tax. Schedule C is commonly used to report business profit; exceptions and other rules apply.",
       status: "action-required",
       whyItMatters: "No taxes were automatically withheld from your freelance paychecks. You may owe Self-Employment Tax even if you owe $0 in federal income tax.",
       actionLink: "/resources#irs-self-employment-tax",
@@ -50,11 +60,39 @@ export function generateChecklist(answers = {}) {
       id: "check-dependent-box",
       title: "Confirm Your Dependent Status on Form 1040",
       category: "Filing Basics",
-      description: "If your parents or guardians provide more than half your financial support, check the box: 'Someone can claim you as a dependent' on your return.",
+      description: "Whether someone can claim you depends on IRS qualifying-child or qualifying-relative tests. Review the rules and confirm details with the person who may claim you.",
       status: "guidance",
-      whyItMatters: "Being claimed as a dependent does NOT prevent you from filing your own return to claim your refund, but you cannot claim the full adult standard deduction.",
+      whyItMatters: "Dependent status does not automatically prevent you from filing your own return, but it affects filing rules and some tax benefits.",
       actionLink: "/resources#irs-dependents-pub501",
       actionText: "Read IRS Publication 501"
+    });
+  }
+
+  if (state) {
+    const stateName = stateNames[state] || state;
+    items.push({
+      id: "check-state-rules",
+      title: `Explore state tax rules for ${stateName}`,
+      category: "State Taxes",
+      description: "State income-tax rules, deadlines, and filing requirements differ. Check current information from your state's official tax agency, especially if you lived or worked in more than one state.",
+      status: "guidance",
+      whyItMatters: "This educational checklist does not determine whether you need to file a state return.",
+    });
+  }
+
+  const openQuestions = [...uncertainties];
+  if (incomeTypes.includes("not-sure")) openQuestions.push("Which income types apply");
+  if (documents.includes("unsure-docs") || documents.includes("no-docs-yet")) openQuestions.push("Which documents to expect");
+  if (dependentStatus === "unsure") openQuestions.push("Whether someone can claim you as a dependent");
+
+  if (openQuestions.length > 0) {
+    items.push({
+      id: "resolve-open-questions",
+      title: "Write down questions to check",
+      category: "Next Steps",
+      description: [...new Set(openQuestions)].join("; "),
+      status: "guidance",
+      whyItMatters: "You can review these topics with a trusted adult or check current official guidance before making a filing decision.",
     });
   }
 
@@ -64,7 +102,7 @@ export function generateChecklist(answers = {}) {
       id: "aggregate-incomes",
       title: "Do Not File Until You Have ALL Documents",
       category: "Filing Strategy",
-      description: "You file only ONE federal tax return per calendar year. If you file before receiving all W-2s or 1099s, you will have to file an amended return (Form 1040-X).",
+      description: "Most individuals file one federal income tax return for a tax year. Gather all income documents before filing; missing information may require a correction or amended return.",
       status: "guidance",
       whyItMatters: "Filing an amended return can delay your refund by several months.",
       actionLink: "/practice?tab=mock-return",
@@ -75,11 +113,11 @@ export function generateChecklist(answers = {}) {
   // 5. Free File Tool Selection
   items.push({
     id: "use-irs-free-file",
-    title: "Use IRS Free File (Never Pay to File)",
+    title: "Check IRS Free File Eligibility",
     category: "Software Tools",
-    description: "Since student and teen earners almost always make under $79,000, you are entitled to 100% free federal and state preparation through IRS Free File.",
+    description: "The current IRS Free File page lists an AGI limit of $89,000 or below for Guided Tax. Partner eligibility rules vary, and free state-return availability depends on the partner and state.",
     status: "recommendation",
-    whyItMatters: "Commercial websites often attempt to charge teens $40-$80 for simple returns. IRS Free File ensures zero out-of-pocket fees.",
+    whyItMatters: "Use the IRS partner-selection tool and read the selected offer's eligibility and fees before starting. IRS Free File is separate from commercial products outside the program.",
     actionLink: "https://www.irs.gov/file-your-taxes-for-free",
     actionText: "Visit IRS Free File Portal",
     isExternal: true
@@ -88,11 +126,11 @@ export function generateChecklist(answers = {}) {
   // 6. Direct Deposit Setup
   items.push({
     id: "direct-deposit",
-    title: "Gather Routing & Account Numbers for Direct Deposit",
+    title: "Explore Refund Delivery Options",
     category: "Refund Delivery",
-    description: "Electronic direct deposit into a checking or savings account delivers your tax refund in approximately 21 days, compared to 6-8 weeks for paper checks.",
+    description: "If a return shows a refund, review the IRS options for receiving it. Processing times vary; no delivery date is guaranteed.",
     status: "tip",
-    whyItMatters: "Fastest and safest refund method. If you don't have a bank account, some Free File partners offer prepaid cards or savings bonds.",
+    whyItMatters: "Learn about available delivery methods from the IRS. FirstFile never asks for bank or routing numbers.",
     actionLink: "/resources",
     actionText: "Learn About Refunds"
   });
@@ -103,8 +141,8 @@ export function generateChecklist(answers = {}) {
     summary: {
       totalItems: items.length,
       estimatedFilingNeed: documents.includes("w2") || incomeTypes.includes("w2-wages")
-        ? "Likely eligible for a refund of withheld taxes!"
-        : "Review filing requirements to confirm if an official return is needed."
+        ? "A W-2 reports wages and withholding. Whether you must file or may receive a refund depends on your complete income, credits, and tax-year rules."
+        : "These answers are learning prompts, not a filing determination. Use current IRS guidance to check whether a return is required."
     }
   };
 }

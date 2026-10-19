@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { AppShell } from "../../components/AppShell.jsx";
 import { GLOSSARY_TERMS } from "../../data/glossary.js";
 import { QUIZ_QUESTIONS } from "../../data/quiz.js";
-import { gradeQuiz } from "../../lib/quiz.js";
+import { gradeQuiz, QUIZ_RESULT_STORAGE_KEY } from "../../lib/quiz.js";
 
 const inferCategory = (term) => {
   const value = term.toLowerCase();
@@ -44,10 +45,33 @@ export default function LearnPage() {
   const currentQ = QUIZ_QUESTIONS[currentQuestionIdx];
   const quizResults = gradeQuiz(QUIZ_QUESTIONS, selectedAnswers);
 
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("tab") === "quiz") {
+      setActiveTab("quiz");
+    }
+  }, []);
+
   const handleSelectOption = (idx) => {
     if (showExplanation) return;
-    setSelectedAnswers((prev) => ({ ...prev, [currentQuestionIdx]: idx }));
-    setShowExplanation(true);
+    const nextAnswers = { ...selectedAnswers, [currentQuestionIdx]: idx };
+    setSelectedAnswers(nextAnswers);
+
+    if (currentQuestionIdx === QUIZ_QUESTIONS.length - 1) {
+      const results = gradeQuiz(QUIZ_QUESTIONS, nextAnswers);
+      try {
+        localStorage.setItem(QUIZ_RESULT_STORAGE_KEY, JSON.stringify({
+          correct: results.correct,
+          total: results.total,
+          percentage: results.percentage,
+          focusAreas: results.results.filter((result) => !result.isCorrect).map((result) => result.scenario),
+        }));
+      } catch (error) {
+        console.warn("Unable to save quiz results", error);
+      }
+      setQuizFinished(true);
+    } else {
+      setShowExplanation(true);
+    }
   };
 
   const handleNextQuestion = () => {
@@ -147,7 +171,7 @@ export default function LearnPage() {
                         <span className="rounded-full bg-[#EAF7F3] px-2 py-1 text-[9px] font-bold uppercase tracking-[0.12em] text-[#176B52]">{category}</span>
                         <h3 className="mt-3 text-xl font-bold text-[#123C32]">{item.term}</h3>
                       </div>
-                      <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#6F7C74]">{item.taxYear}</span>
+                      <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#6F7C74]">Rules vary by year</span>
                     </div>
 
                     <p className="mt-4 text-sm leading-6 text-[#41514A]">{item.definition}</p>
@@ -259,7 +283,7 @@ export default function LearnPage() {
                 {showExplanation && (
                   <div className="flex justify-end">
                     <button type="button" onClick={handleNextQuestion} className="primary-btn h-12 px-5 text-sm">
-                      {currentQuestionIdx + 1 < QUIZ_QUESTIONS.length ? "Next question" : "View results"}
+                      "Next question"
                     </button>
                   </div>
                 )}
@@ -282,9 +306,14 @@ export default function LearnPage() {
                         ? "A solid start. Review the questions you missed to strengthen your tax knowledge."
                         : "Every question is a learning opportunity. Review the explanations, then try again when you are ready."}
                   </p>
-                  <button type="button" onClick={handleRestartQuiz} className="primary-btn mt-5 h-11 px-5 text-sm">
-                    Retake quiz
-                  </button>
+                  <div className="mt-5 flex flex-wrap justify-center gap-3">
+                    <button type="button" onClick={handleRestartQuiz} className="primary-btn h-11 px-5 text-sm">
+                      Retake quiz
+                    </button>
+                    <Link href="/#questionnaire" className="secondary-btn h-11 px-5 text-sm font-semibold">
+                      View my personalized guide
+                    </Link>
+                  </div>
                 </div>
 
                 <div>

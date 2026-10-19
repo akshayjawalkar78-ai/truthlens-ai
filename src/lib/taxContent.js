@@ -16,7 +16,7 @@ export function queryTaxExplanation(query = "") {
   // 1. Specific teen FAQ topics
   if (cleanQuery.includes("dependent") || cleanQuery.includes("parent")) {
     return {
-      answer: "Being claimed as a dependent on your parents' tax return DOES NOT stop you from filing your own return. If an employer took federal taxes out of your paychecks (Box 2 on your W-2), filing your own Form 1040 is the ONLY way to get that money back as a tax refund. You simply check the box on your return stating: 'Someone can claim you as a dependent.'",
+      answer: "Being claimed as a dependent does not by itself prevent you from filing your own federal return. If federal income tax was withheld and you want to claim a refund, you generally need to file a return. First confirm whether someone can claim you using the current IRS qualifying-child or qualifying-relative tests.",
       sourceTitle: "IRS Publication 501: Dependents",
       sourceUrl: "https://www.irs.gov/publications/p501",
       confidenceLabel: "reviewed",
@@ -26,7 +26,7 @@ export function queryTaxExplanation(query = "") {
 
   if (cleanQuery.includes("refund") || cleanQuery.includes("money back")) {
     return {
-      answer: "A tax refund is not free bonus money or lottery winnings. It is simply your own money being returned to you because your employer withheld more in estimated income taxes throughout the year than you actually owed. If you earned less than the single standard deduction, your federal income tax liability is usually $0, meaning 100% of the federal income tax withheld from your paychecks is refunded to you.",
+      answer: "A federal refund generally means your payments and refundable credits were greater than your total tax for the year. Withholding is one kind of payment, but other income, taxes, and credits can affect the final result. Only a complete return can determine whether you are due a refund.",
       sourceTitle: "IRS Where's My Refund?",
       sourceUrl: "https://www.irs.gov/refunds",
       confidenceLabel: "reviewed",
@@ -53,7 +53,7 @@ export function queryTaxExplanation(query = "") {
 
   if (cleanQuery.includes("1099") || cleanQuery.includes("gig") || cleanQuery.includes("tutor") || cleanQuery.includes("freelance")) {
     return {
-      answer: "If you earned money doing independent work, tutoring, yard work, or selling online, you are considered self-employed by the IRS. If your net profit from self-employment was $400 or more in the calendar year, you are legally required to file a federal tax return and pay 15.3% Self-Employment Tax (which funds Social Security and Medicare), even if you are a minor or claimed as a dependent.",
+      answer: "If your work is self-employment, net earnings of $400 or more generally trigger a federal filing requirement and self-employment tax. The standard rate is 15.3% for Social Security and Medicare, but special rules and exceptions can apply. A 1099 form is not required to report taxable income.",
       sourceTitle: "IRS Self-Employment Tax Guide",
       sourceUrl: "https://www.irs.gov/businesses/small-businesses-self-employed/self-employment-tax-social-security-and-medicare-taxes",
       confidenceLabel: "reviewed",
@@ -63,7 +63,7 @@ export function queryTaxExplanation(query = "") {
 
   if (cleanQuery.includes("w2") || cleanQuery.includes("w-2") || cleanQuery.includes("box")) {
     return {
-      answer: "Form W-2 is the wage statement sent by employers by January 31. Box 1 shows your total taxable wages for the year, Box 2 shows the federal income tax withheld, Box 4 shows Social Security tax (6.2%), and Box 6 shows Medicare tax (1.45%). Box 2 is the most important box for teen filers: that is the money you are requesting back as a refund.",
+      answer: "Form W-2 reports wages and related tax information from an employer. Box 1 reports wages, tips, and other compensation; Box 2 reports federal income tax withheld; Box 4 reports Social Security tax withheld; and Box 6 reports Medicare tax withheld. Withholding is a prepayment, not a guaranteed refund.",
       sourceTitle: "IRS About Form W-2",
       sourceUrl: "https://www.irs.gov/forms-pubs/about-form-w-2",
       confidenceLabel: "reviewed",
@@ -76,9 +76,9 @@ export function queryTaxExplanation(query = "") {
 
 function getGeneralFilingAdvice() {
   return {
-    answer: "FirstFile recommendation: Review your tax documents (such as your Form W-2 or 1099). If you worked a job and had federal income tax withheld, you should file your return through IRS Free File to claim your refund. If you earned $400+ from freelance or gig work, you will also need to report self-employment tax.",
-    sourceTitle: "IRS Free File Portal",
-    sourceUrl: "https://www.irs.gov/file-your-taxes-for-free",
+    answer: "Filing requirements depend on your income type, amount, age, dependent status, and tax year. If tax was withheld, filing may let you claim a refund; self-employment income can have separate filing rules. Use the IRS Interactive Tax Assistant or current IRS publications for your situation.",
+    sourceTitle: "IRS Interactive Tax Assistant: Do I Need to File?",
+    sourceUrl: "https://www.irs.gov/help/ita/do-i-need-to-file-a-tax-return",
     confidenceLabel: "reviewed",
     mode: "offline"
   };

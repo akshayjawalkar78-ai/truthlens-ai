@@ -5,10 +5,9 @@ import { generateChecklist } from "./checklist.js";
 import { queryTaxExplanation } from "./taxContent.js";
 import { gradeQuiz } from "./quiz.js";
 
-test("calculatePaycheck calculates FICA and take-home pay correctly", () => {
+test("calculatePaycheck uses supplied withholding and calculates simplified FICA", () => {
   const result = calculatePaycheck({
     grossPay: 300,
-    payFrequency: "biweekly",
     customFederalWithheld: 15,
     customStateWithheld: 0
   });
@@ -19,17 +18,27 @@ test("calculatePaycheck calculates FICA and take-home pay correctly", () => {
   assert.equal(result.breakdown.totalFica, 22.95);
   assert.equal(result.breakdown.federalWithholding, 15);
   assert.equal(result.breakdown.stateWithholding, 0);
-  assert.equal(result.takeHomePay, 262.05); // 300 - 22.95 - 15 - 0 = 262.05
+  assert.equal(result.takeHomePay, 262.05);
 });
 
-test("calculatePaycheck handles negative or invalid inputs gracefully", () => {
+test("calculatePaycheck does not invent missing federal or state withholding", () => {
+  const result = calculatePaycheck({ grossPay: 300 });
+
+  assert.equal(result.breakdown.federalWithholding, null);
+  assert.equal(result.breakdown.stateWithholding, null);
+  assert.equal(result.takeHomePay, null);
+  assert.equal(result.remainingAfterEnteredDeductions, 277.05);
+});
+
+test("calculatePaycheck handles negative or invalid gross inputs gracefully", () => {
   const result = calculatePaycheck({
     grossPay: -50,
     payFrequency: "biweekly"
   });
 
   assert.equal(result.grossPay, 0);
-  assert.equal(result.takeHomePay, 0);
+  assert.equal(result.takeHomePay, null);
+  assert.equal(result.remainingAfterEnteredDeductions, 0);
 });
 
 test("generateChecklist includes W-2 and dependency guidance for student workers", () => {
@@ -61,14 +70,32 @@ test("generateChecklist includes self-employment guidance for 1099 freelance wor
   assert.ok(seItem, "Must include self-employment tax guidance");
 });
 
+test("generateChecklist uses state and uncertain answers as learning tasks", () => {
+  const checklist = generateChecklist({
+    state: "TX",
+    incomeTypes: ["not-sure"],
+    documents: ["no-docs-yet"],
+    dependentStatus: "unsure",
+    uncertainties: ["Which tax year applies"],
+  });
+
+  const stateItem = checklist.items.find((item) => item.id === "check-state-rules");
+  assert.ok(stateItem.title.includes("Texas"));
+
+  const questionsItem = checklist.items.find((item) => item.id === "resolve-open-questions");
+  assert.ok(questionsItem.description.includes("Which tax year applies"));
+  assert.ok(questionsItem.description.includes("Which documents to expect"));
+  assert.ok(questionsItem.description.includes("Whether someone can claim you"));
+});
+
 test("queryTaxExplanation retrieves verified offline explanations for dependents and refunds", () => {
   const dependentQuery = queryTaxExplanation("Can I file if my parents claim me as a dependent?");
   assert.equal(dependentQuery.confidenceLabel, "reviewed");
   assert.equal(dependentQuery.mode, "offline");
-  assert.ok(dependentQuery.answer.includes("DOES NOT stop you from filing"));
+  assert.ok(dependentQuery.answer.includes("does not by itself prevent you from filing"));
 
   const refundQuery = queryTaxExplanation("What is a tax refund?");
-  assert.ok(refundQuery.answer.includes("returned to you"));
+  assert.ok(refundQuery.answer.includes("payments and refundable credits"));
 });
 
 test("gradeQuiz reports correct, incorrect, and unanswered responses accurately", () => {

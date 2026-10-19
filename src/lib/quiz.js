@@ -1,3 +1,5 @@
+export const QUIZ_RESULT_STORAGE_KEY = "firstfile-tax-quiz-result";
+
 export function gradeQuiz(questions, selectedAnswers = {}) {
   const results = questions.map((question, index) => {
     const answerIndex = selectedAnswers[index];

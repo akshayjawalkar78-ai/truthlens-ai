@@ -2,8 +2,8 @@ export const GLOSSARY_TERMS = [
   {
     id: "gross-income",
     term: "Gross Income",
-    definition: "The total amount of money you earn before any taxes, retirement contributions, or other paycheck deductions are taken out.",
-    whyItMatters: "Tax brackets, filing requirements, and benefits are calculated based on gross income formulas, not what lands in your bank account.",
+    definition: "The total amount of income before certain adjustments and deductions. Gross income on a tax return can include more than wages; paycheck gross pay is wages before payroll deductions.",
+    whyItMatters: "Gross income, adjusted gross income, and taxable income are different amounts used for different tax rules.",
     example: "If you work 20 hours at $15/hour, your gross pay is $300, even if your direct deposit is only $265.",
     sourceTitle: "IRS Publication 17 (Your Federal Income Tax)",
     sourceUrl: "https://www.irs.gov/publications/p17",
@@ -12,7 +12,7 @@ export const GLOSSARY_TERMS = [
   {
     id: "take-home-pay",
     term: "Take-Home Pay (Net Pay)",
-    definition: "The actual amount of cash you receive on payday after all federal, state, and payroll withholdings are subtracted.",
+    definition: "The amount paid to you after the deductions and withholdings on that paycheck are subtracted from gross pay.",
     whyItMatters: "This is your real spending and savings budget. Understanding deductions helps explain why net pay is lower than your hourly rate times hours worked.",
     example: "Gross earnings of $400 minus $30 federal tax, $24.80 Social Security, and $5.80 Medicare leaves $339.40 take-home pay.",
     sourceTitle: "Consumer Financial Protection Bureau — Understanding Your Paycheck",
@@ -23,7 +23,7 @@ export const GLOSSARY_TERMS = [
     id: "federal-withholding",
     term: "Federal Income Tax Withholding",
     definition: "Money your employer sends directly to the IRS on your behalf from each paycheck as an estimated prepayment toward your annual tax liability.",
-    whyItMatters: "If too much is withheld throughout the year, you get a refund when you file. If too little is withheld, you may owe the difference.",
+    whyItMatters: "Withholding is a prepayment. Your annual return reconciles payments, credits, and total tax; withholding alone does not determine a refund.",
     example: "Box 2 of your Form W-2 reports the cumulative federal income tax withheld over the entire calendar year.",
     sourceTitle: "IRS Tax Withholding Estimator Guide",
     sourceUrl: "https://www.irs.gov/individuals/tax-withholding-estimator",
@@ -32,7 +32,7 @@ export const GLOSSARY_TERMS = [
   {
     id: "w2-form",
     term: "Form W-2 (Wage and Tax Statement)",
-    definition: "An annual tax statement that your employer must send you by January 31 showing exactly how much you earned and how much tax was withheld.",
+    definition: "An annual wage statement that an employer generally furnishes by January 31 of the following year, with wages and certain taxes withheld. Exceptions and timing rules can apply.",
     whyItMatters: "You cannot accurately file your federal or state return without the numbers from Box 1 (wages) and Box 2 (federal tax withheld).",
     example: "If you worked at a movie theater and a coffee shop in the same year, you will receive two separate W-2 forms.",
     sourceTitle: "IRS About Form W-2",
@@ -42,8 +42,8 @@ export const GLOSSARY_TERMS = [
   {
     id: "1099-form",
     term: "Form 1099 (1099-NEC / 1099-MISC)",
-    definition: "A tax document used for independent contractors, freelancers, and gig workers who earn money without standard employee tax withholding.",
-    whyItMatters: "Unlike W-2 jobs, employers do NOT take taxes out of 1099 payments. You are responsible for paying both income tax and self-employment tax yourself.",
+    definition: "An information return used to report certain payments, such as nonemployee compensation. Receiving or not receiving a 1099 does not by itself determine whether income is taxable.",
+    whyItMatters: "Independent-work income may have no regular payroll withholding and can be subject to income and self-employment taxes. The work relationship and net earnings matter.",
     example: "If you earned $900 tutoring neighborhood kids or delivering food via an app, you may receive a Form 1099-NEC.",
     sourceTitle: "IRS Independent Contractor (Self-Employed) or Employee?",
     sourceUrl: "https://www.irs.gov/businesses/small-businesses-self-employed/independent-contractor-self-employed-or-employee",
@@ -52,9 +52,9 @@ export const GLOSSARY_TERMS = [
   {
     id: "dependent",
     term: "Dependent",
-    definition: "A person (often a child, teen, or full-time student under age 24) who relies on a parent or guardian for more than half of their financial support.",
-    whyItMatters: "Being claimed as a dependent DOES NOT prevent you from filing your own tax return. However, it changes your standard deduction and filing thresholds.",
-    example: "A 17-year-old living at home whose parents pay for housing and food is typically claimed as a dependent, but can still file to claim a refund of withheld taxes.",
+    definition: "A person who meets the IRS tests to be claimed as a qualifying child or qualifying relative. The tests differ; age, relationship, residency, support, and income may matter.",
+    whyItMatters: "A dependent may still file a separate return. Dependency and filing requirements are separate questions and depend on the person's full facts and tax year.",
+    example: "A student living with a parent may meet some qualifying-child tests, but the IRS tests and the full household facts determine whether the parent can claim them.",
     sourceTitle: "IRS Publication 501: Dependents, Standard Deduction, and Filing Information",
     sourceUrl: "https://www.irs.gov/publications/p501",
     taxYear: "2024 / 2025"
@@ -62,9 +62,9 @@ export const GLOSSARY_TERMS = [
   {
     id: "tax-return",
     term: "Tax Return (Form 1040)",
-    definition: "The official form you submit annually to the IRS reconciling all your earnings for the year against the taxes you already prepaid.",
-    whyItMatters: "Filing a return is the only legal way to receive a refund of taxes withheld from your paychecks if you earned below the filing threshold.",
-    example: "Filing your Form 1040 by April 15 reports $4,000 earned and requests back the $250 your employer withheld in Box 2.",
+    definition: "A set of forms filed with the IRS to report income, deductions, credits, payments, and calculate tax for a year. Form 1040 is the main individual federal return.",
+    whyItMatters: "Filing may be required, or may let you claim a refund or tax benefits. Whether you must file depends on income, income type, filing status, and tax-year rules.",
+    example: "A return compares total tax with withholding and other payments; it can show a refund, a balance due, or no balance either way.",
     sourceTitle: "IRS Free File: Do Your Taxes for Free",
     sourceUrl: "https://www.irs.gov/file-your-taxes-for-free",
     taxYear: "2024 / 2025"
@@ -72,9 +72,9 @@ export const GLOSSARY_TERMS = [
   {
     id: "tax-refund",
     term: "Tax Refund",
-    definition: "A reimbursement from the government returning money that you overpaid in paycheck withholding throughout the year.",
-    whyItMatters: "A refund is NOT free bonus money or lottery winnings—it was already your money that was held interest-free by the treasury.",
-    example: "If your calculated tax bill for the year is $0 because you earned under the threshold, but $180 was withheld, your refund is $180.",
+    definition: "An amount returned when payments and refundable credits exceed the tax owed for the year.",
+    whyItMatters: "Withholding is one possible payment, but refundable credits and other payments can also affect a refund. A refund is not a filing requirement determination.",
+    example: "If total tax is $50 and payments plus refundable credits total $180, the return may show a $130 refund, assuming no other adjustments.",
     sourceTitle: "IRS Where's My Refund?",
     sourceUrl: "https://www.irs.gov/refunds",
     taxYear: "2024 / 2025"
@@ -82,19 +82,19 @@ export const GLOSSARY_TERMS = [
   {
     id: "tax-liability",
     term: "Tax Liability",
-    definition: "The actual total dollar amount of income tax you legally owe to the government based on your taxable income.",
-    whyItMatters: "Your refund or bill is calculated as: (Total Withholding Paid) minus (Actual Tax Liability).",
+    definition: "The total tax owed for a tax year after applying the tax rules and relevant credits.",
+    whyItMatters: "A return compares total tax with withholding, estimated payments, and refundable credits to determine a refund or balance due.",
     example: "If your tax liability is $50 and your employer withheld $80, you receive a $30 refund.",
-    sourceTitle: "IRS Tax Topic 551: Basis of Assets and Tax Computation",
-    sourceUrl: "https://www.irs.gov/taxtopics",
+    sourceTitle: "IRS Publication 17: Your Federal Income Tax",
+    sourceUrl: "https://www.irs.gov/publications/p17",
     taxYear: "2024 / 2025"
   },
   {
     id: "deduction",
     term: "Standard Deduction",
-    definition: "A specific dollar amount that reduces your total income before taxes are calculated, making that portion of your earnings completely tax-free.",
-    whyItMatters: "For dependents, the standard deduction is calculated based on earned income plus $450 (up to the single maximum), shielding teen wages from federal income tax.",
-    example: "If you earned $3,500 at a retail store, your standard deduction eliminates all federal income tax liability on those wages.",
+    definition: "A tax deduction amount that reduces income subject to tax. The amount depends on filing status and tax year; dependents have special rules.",
+    whyItMatters: "A deduction can reduce taxable income, but it does not by itself determine filing requirements or total tax. Check the current year's IRS rules.",
+    example: "A deduction reduces the income used in a tax calculation. The resulting tax depends on the applicable rates, credits, and other income.",
     sourceTitle: "IRS Publication 501: Standard Deduction for Dependents",
     sourceUrl: "https://www.irs.gov/publications/p501",
     taxYear: "2024 / 2025"
@@ -102,8 +102,8 @@ export const GLOSSARY_TERMS = [
   {
     id: "tax-credit",
     term: "Tax Credit",
-    definition: "A dollar-for-dollar reduction of your actual tax liability, which is more valuable than a deduction because it directly reduces the taxes owed.",
-    whyItMatters: "Some credits (refundable credits) can even generate cash back to you even if your tax liability is zero.",
+    definition: "An amount that reduces tax. A refundable credit may be paid in part beyond tax owed; a nonrefundable credit generally cannot reduce regular tax below zero.",
+    whyItMatters: "Credit eligibility, amounts, and refundable status vary by credit and tax year.",
     example: "A $200 tax credit wipes out a $200 tax bill completely, whereas a $200 deduction only reduces your taxable income by $200.",
     sourceTitle: "IRS Tax Credits and Deductions for Individuals",
     sourceUrl: "https://www.irs.gov/credits-deductions-for-individuals",
@@ -112,9 +112,9 @@ export const GLOSSARY_TERMS = [
   {
     id: "self-employment-tax",
     term: "Self-Employment Tax (SECA)",
-    definition: "A 15.3% tax composed of Social Security (12.4%) and Medicare (2.9%) that individuals working for themselves must pay on net business earnings of $400 or more.",
-    whyItMatters: "Standard W-2 employers pay half of FICA taxes for you. When you do gig work or freelance, you must cover both the employee and employer shares.",
-    example: "If you earn $1,200 as an independent freelance graphic designer, you owe approximately 15.3% in self-employment tax even if you owe $0 in federal income tax.",
+    definition: "A tax that generally applies to net earnings from self-employment. The standard rate is 15.3% (12.4% Social Security plus 2.9% Medicare), subject to limits and special rules.",
+    whyItMatters: "Net self-employment earnings of $400 or more generally trigger a filing requirement for self-employment tax. Income tax and self-employment tax are separate calculations.",
+    example: "A freelancer's net profit is not the same as gross payments. Business expenses and tax rules affect the amount used to calculate self-employment tax.",
     sourceTitle: "IRS Self-Employment Tax (Social Security and Medicare Taxes)",
     sourceUrl: "https://www.irs.gov/businesses/small-businesses-self-employed/self-employment-tax-social-security-and-medicare-taxes",
     taxYear: "2024 / 2025"
@@ -122,18 +122,18 @@ export const GLOSSARY_TERMS = [
   {
     id: "social-security-tax",
     term: "Social Security Tax (OASDI)",
-    definition: "A mandatory 6.2% payroll tax withheld from an employee's wages that funds federal retirement, disability, and survivor benefits.",
-    whyItMatters: "This tax is deducted regardless of your age, whether you are a minor, or whether you are claimed as a dependent.",
+    definition: "The employee share of Social Security payroll tax is generally 6.2% of covered wages, up to the annual wage base. Some employment exceptions apply.",
+    whyItMatters: "Age or dependent status alone does not exempt most employees, but not every job is subject to the same payroll-tax rules.",
     example: "On a $200 paycheck, exactly $12.40 is withheld for Social Security.",
-    sourceTitle: "Social Security Administration — FICA Tax Rates",
-    sourceUrl: "https://www.ssa.gov",
+    sourceTitle: "IRS Topic No. 751: Social Security and Medicare Withholding Rates",
+    sourceUrl: "https://www.irs.gov/taxtopics/tc751",
     taxYear: "2024 / 2025"
   },
   {
     id: "medicare-tax",
     term: "Medicare Tax (Hospital Insurance)",
-    definition: "A mandatory 1.45% payroll tax withheld from employee wages that helps fund healthcare for Americans age 65 and older.",
-    whyItMatters: "Together with Social Security (6.2%), Medicare makes up the 7.65% FICA deduction on almost all teen W-2 paychecks.",
+    definition: "The employee share of Medicare payroll tax is generally 1.45% of covered wages. Additional Medicare Tax may apply above a tax-year threshold.",
+    whyItMatters: "Together with the standard employee Social Security rate, these are commonly called FICA taxes. Exceptions and additional taxes can apply.",
     example: "On a $200 paycheck, exactly $2.90 is withheld for Medicare.",
     sourceTitle: "IRS Topic No. 751: Social Security and Medicare Withholding Rates",
     sourceUrl: "https://www.irs.gov/taxtopics/tc751",

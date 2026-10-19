@@ -5,6 +5,7 @@ import Link from "next/link";
 import { AppShell } from "../components/AppShell.jsx";
 import { PRELOADED_SCENARIOS } from "../data/scenarios.js";
 import { generateChecklist } from "../lib/checklist.js";
+import { QUIZ_RESULT_STORAGE_KEY } from "../lib/quiz.js";
 
 const STORAGE_KEY = "firstfile-checklist-progress";
 
@@ -30,9 +31,9 @@ const featureCards = [
 ];
 
 const toolPreview = [
-  { heading: "W-2 explorer", meta: "Sample document", tone: "bg-[#E8F5EE] text-[#123C32]" },
-  { heading: "Paycheck lab", meta: "Calculator", tone: "bg-[#F4F7F6] text-[#176B52]" },
-  { heading: "Scenario quiz", meta: "Practice", tone: "bg-[#FFF7E6] text-[#7A5E1F]" },
+  { heading: "W-2 explorer", meta: "Sample document", tone: "bg-[#E8F5EE] text-[#123C32]", href: "/practice" },
+  { heading: "Paycheck lab", meta: "Calculator", tone: "bg-[#F4F7F6] text-[#176B52]", href: "/paycheck" },
+  { heading: "Scenario quiz", meta: "Practice", tone: "bg-[#FFF7E6] text-[#7A5E1F]", href: "/learn?tab=quiz" },
 ];
 
 const processSteps = [
@@ -43,7 +44,7 @@ const processSteps = [
 
 export default function HomePage() {
   const initialAnswers = {
-    taxYear: "2024",
+    taxYear: "2025",
     incomeTypes: ["w2-wages"],
     documents: ["w2"],
     dependentStatus: "yes",
@@ -57,6 +58,7 @@ export default function HomePage() {
   const [checklist, setChecklist] = useState(() => generateChecklist(initialAnswers));
   const [activeScenarioId, setActiveScenarioId] = useState("summer-job-w2");
   const [completedItems, setCompletedItems] = useState({});
+  const [quizSummary, setQuizSummary] = useState(null);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -70,6 +72,8 @@ export default function HomePage() {
         if (parsed.activeScenarioId) setActiveScenarioId(parsed.activeScenarioId);
         if (parsed.answers) setChecklist(generateChecklist(parsed.answers));
       }
+      const storedQuizSummary = localStorage.getItem(QUIZ_RESULT_STORAGE_KEY);
+      if (storedQuizSummary) setQuizSummary(JSON.parse(storedQuizSummary));
     } catch (error) {
       console.warn("Unable to read saved checklist state", error);
     } finally {
@@ -86,6 +90,7 @@ export default function HomePage() {
   const progressValue = checklist.items.length
     ? Math.round((checklist.items.filter((item) => completedItems[item.id]).length / checklist.items.length) * 100)
     : 0;
+  const nextChecklistItem = checklist.items.find((item) => !completedItems[item.id]);
 
   const handleToggleItem = (id) => {
     setCompletedItems((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -186,38 +191,37 @@ export default function HomePage() {
                 </div>
 
                 <div className="space-y-3">
-                  {[
-                    { label: "Confirm W-2 details", done: true, tone: "text-[#176B52]" },
-                    { label: "Review dependent status", done: true, tone: "text-[#176B52]" },
-                    { label: "Check gig income rules", done: false, tone: "text-[#7A5E1F]" },
-                  ].map((item) => (
-                    <div key={item.label} className="flex items-center justify-between rounded-xl border border-[#E8EDE7] bg-[#FAFDFC] px-3 py-2.5">
-                      <div className="flex items-center gap-3">
-                        <span className={`inline-flex h-5 w-5 items-center justify-center rounded-full ${item.done ? "bg-[#DDF3E7] text-[#176B52]" : "bg-[#FFF1D0] text-[#7A5E1F]"}`}>
-                          {item.done ? "✓" : "•"}
+                  {checklist.items.slice(0, 3).map((item) => {
+                    const isComplete = !!completedItems[item.id];
+                    return (
+                      <div key={item.id} className="flex items-center justify-between gap-3 rounded-xl border border-[#E8EDE7] bg-[#FAFDFC] px-3 py-2.5">
+                        <div className="flex min-w-0 items-center gap-3">
+                          <span className={`inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${isComplete ? "bg-[#DDF3E7] text-[#176B52]" : "bg-[#FFF1D0] text-[#7A5E1F]"}`}>
+                            {isComplete ? "✓" : "•"}
+                          </span>
+                          <span className="text-sm font-medium text-[#202923]">{item.title}</span>
+                        </div>
+                        <span className={`shrink-0 text-[10px] font-bold uppercase tracking-[0.12em] ${isComplete ? "text-[#176B52]" : "text-[#7A5E1F]"}`}>
+                          {isComplete ? "done" : "to explore"}
                         </span>
-                        <span className="text-sm font-medium text-[#202923]">{item.label}</span>
                       </div>
-                      <span className={`text-[10px] font-bold uppercase tracking-[0.12em] ${item.done ? "text-[#176B52]" : "text-[#7A5E1F]"}`}>
-                        {item.done ? "done" : "next"}
-                      </span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 <div className="rounded-2xl border border-[#D9E7DF] bg-[#123C32] p-4 text-white">
                   <div className="flex items-center justify-between gap-3">
                     <div>
-                      <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#DDE9E5]">Next step</p>
-                      <h4 className="mt-1 text-base font-bold">Review gig work rules</h4>
+                      <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#DDE9E5]">Next learning step</p>
+                      <h4 className="mt-1 text-base font-bold">{nextChecklistItem?.title ?? "Explore a learning module"}</h4>
                     </div>
-                    <span className="rounded-full bg-white/10 px-2 py-1 text-[10px] font-bold uppercase tracking-[0.12em]">2 min</span>
+                    <span className="rounded-full bg-white/10 px-2 py-1 text-[10px] font-bold uppercase tracking-[0.12em]">Learning task</span>
                   </div>
                 </div>
 
                 <div className="rounded-2xl border border-[#E8EDE7] bg-[#FAF9F6] p-4">
                   <div className="mb-2 flex items-center justify-between">
-                    <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#6F7C74]">W-2 preview</span>
+                    <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#6F7C74]">W-2 preview · fictional</span>
                     <span className="rounded-full bg-[#FFF8E7] px-2 py-0.5 text-[10px] font-bold text-[#7A5E1F]">Sample</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-xs text-[#41514A]">
@@ -271,7 +275,7 @@ export default function HomePage() {
 
         <div className="grid gap-4 md:grid-cols-3">
           {toolPreview.map((item, index) => (
-            <div key={item.heading} className="rounded-[1.5rem] border border-[#D9E7DF] bg-white p-4 shadow-sm">
+            <Link key={item.heading} href={item.href} className="block rounded-[1.5rem] border border-[#D9E7DF] bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft">
               <div className={`inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] ${item.tone}`}>
                 {item.meta}
               </div>
@@ -285,22 +289,20 @@ export default function HomePage() {
                 )}
                 {index === 1 && (
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between text-xs text-[#41514A]"><span>Gross pay</span><strong className="text-[#123C32]">$320.00</strong></div>
-                    <div className="h-2 rounded-full bg-[#E8EDE7]">
-                      <div className="h-full w-[72%] rounded-full bg-[#176B52]" />
-                    </div>
-                    <div className="text-xs text-[#41514A]">Estimated take-home: <strong className="text-[#123C32]">$254.84</strong></div>
+                    <div className="flex items-center justify-between text-xs text-[#41514A]"><span>Fictional gross pay</span><strong className="text-[#123C32]">$320.00</strong></div>
+                    <div className="flex items-center justify-between text-xs text-[#41514A]"><span>Simplified employee FICA</span><strong className="text-[#123C32]">$24.48</strong></div>
+                    <div className="text-xs leading-5 text-[#6F7C74]">Federal and state withholding are not entered, so this is not a take-home-pay result.</div>
                   </div>
                 )}
                 {index === 2 && (
                   <div className="space-y-2 text-xs text-[#41514A]">
-                    <div className="rounded-xl bg-[#E8F7F1] p-2 text-[#123C32] font-semibold">Q: When is a W-2 needed?</div>
-                    <div className="rounded-xl bg-[#FFF8E7] p-2 text-[#7A5E1F] font-medium">A: After an employer pays you wages</div>
+                    <div className="rounded-xl bg-[#E8F7F1] p-2 text-[#123C32] font-semibold">Q: What does a W-2 report?</div>
+                    <div className="rounded-xl bg-[#FFF8E7] p-2 text-[#7A5E1F] font-medium">A: Wages and certain tax information</div>
                   </div>
                 )}
               </div>
               <h3 className="mt-4 text-lg font-bold text-[#123C32]">{item.heading}</h3>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
@@ -556,6 +558,23 @@ export default function HomePage() {
             </div>
 
             <p className="mt-4 text-sm leading-6 text-[#41514A]">{checklist.summary.estimatedFilingNeed}</p>
+
+            {quizSummary && (
+              <div className="mt-4 rounded-2xl border border-[#D9E7DF] bg-[#F6FBF8] p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#176B52]">Latest quiz result</p>
+                    <p className="mt-1 text-lg font-black text-[#123C32]">{quizSummary.correct} of {quizSummary.total} correct ({quizSummary.percentage}%)</p>
+                  </div>
+                  <Link href="/learn?tab=quiz" className="text-xs font-bold text-[#176B52] hover:underline">Review answers →</Link>
+                </div>
+                {quizSummary.focusAreas?.length > 0 ? (
+                  <p className="mt-2 text-xs leading-5 text-[#41514A]">Topics to revisit: {quizSummary.focusAreas.join(", ")}.</p>
+                ) : (
+                  <p className="mt-2 text-xs leading-5 text-[#41514A]">No missed questions to revisit. Keep exploring the learning modules.</p>
+                )}
+              </div>
+            )}
 
             <div className="mt-5 space-y-3">
               {checklist.items.map((item) => {

@@ -8,8 +8,8 @@ const initialValues = {
   hourlyRate: "16.00",
   hoursWorked: "20",
   grossPay: "320.00",
-  payFrequency: "biweekly",
   customFedWithholding: "",
+  customStateWithholding: "",
 };
 
 export default function PaycheckPage() {
@@ -17,8 +17,8 @@ export default function PaycheckPage() {
   const [hourlyRate, setHourlyRate] = useState(initialValues.hourlyRate);
   const [hoursWorked, setHoursWorked] = useState(initialValues.hoursWorked);
   const [grossPay, setGrossPay] = useState(initialValues.grossPay);
-  const [payFrequency, setPayFrequency] = useState(initialValues.payFrequency);
   const [customFedWithholding, setCustomFedWithholding] = useState(initialValues.customFedWithholding);
+  const [customStateWithholding, setCustomStateWithholding] = useState(initialValues.customStateWithholding);
 
   const validationMessage = useMemo(() => {
     const rate = Number(hourlyRate);
@@ -31,11 +31,13 @@ export default function PaycheckPage() {
     if (mode === "salary" && (Number.isNaN(fixedGross) || fixedGross < 0)) {
       return "Gross pay must be zero or greater.";
     }
-    if (customFedWithholding && Number(customFedWithholding) < 0) {
-      return "Optional withholding cannot be negative.";
+    for (const [label, value] of [["Federal", customFedWithholding], ["State", customStateWithholding]]) {
+      if (value !== "" && (!Number.isFinite(Number(value)) || Number(value) < 0)) {
+        return `${label} withholding must be zero or greater.`;
+      }
     }
     return "";
-  }, [mode, hourlyRate, hoursWorked, grossPay, customFedWithholding]);
+  }, [mode, hourlyRate, hoursWorked, grossPay, customFedWithholding, customStateWithholding]);
 
   const effectiveGross = mode === "hourly"
     ? (Number(hourlyRate) || 0) * (Number(hoursWorked) || 0)
@@ -43,8 +45,8 @@ export default function PaycheckPage() {
 
   const result = calculatePaycheck({
     grossPay: effectiveGross,
-    payFrequency,
-    customFederalWithheld: customFedWithholding ? Number(customFedWithholding) : null,
+    customFederalWithheld: customFedWithholding === "" ? null : Number(customFedWithholding),
+    customStateWithheld: customStateWithholding === "" ? null : Number(customStateWithholding),
   });
 
   const resetForm = () => {
@@ -52,8 +54,8 @@ export default function PaycheckPage() {
     setHourlyRate(initialValues.hourlyRate);
     setHoursWorked(initialValues.hoursWorked);
     setGrossPay(initialValues.grossPay);
-    setPayFrequency(initialValues.payFrequency);
     setCustomFedWithholding(initialValues.customFedWithholding);
+    setCustomStateWithholding(initialValues.customStateWithholding);
   };
 
   return (
@@ -63,7 +65,7 @@ export default function PaycheckPage() {
           <span className="section-kicker">Interactive learning module</span>
           <h1 className="mt-4 text-4xl font-black tracking-[-0.06em] text-[#123C32]">Paycheck & deduction lab</h1>
           <p className="mt-4 max-w-2xl text-base leading-7 text-[#41514A]">
-            Understand why take-home pay is lower than gross wages, and how payroll taxes and withholding affect a real paycheck.
+            Explore a simplified paycheck model with fictional inputs. Only payroll withholding amounts you enter are included; this is not a full take-home-pay calculation.
           </p>
         </div>
 
@@ -107,33 +109,29 @@ export default function PaycheckPage() {
               {mode === "hourly" ? (
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
-                    <label className="mb-2 block text-sm font-semibold text-[#123C32]">Hourly wage</label>
-                    <input type="number" min="0" step="0.50" value={hourlyRate} onChange={(e) => setHourlyRate(e.target.value)} className="form-input h-11 px-3 text-sm" />
+                    <label htmlFor="hourly-rate" className="mb-2 block text-sm font-semibold text-[#123C32]">Hourly wage</label>
+                    <input id="hourly-rate" type="number" min="0" step="0.50" value={hourlyRate} onChange={(e) => setHourlyRate(e.target.value)} className="form-input h-11 px-3 text-sm" />
                   </div>
                   <div>
-                    <label className="mb-2 block text-sm font-semibold text-[#123C32]">Hours worked</label>
-                    <input type="number" min="0" step="1" value={hoursWorked} onChange={(e) => setHoursWorked(e.target.value)} className="form-input h-11 px-3 text-sm" />
+                    <label htmlFor="hours-worked" className="mb-2 block text-sm font-semibold text-[#123C32]">Hours worked</label>
+                    <input id="hours-worked" type="number" min="0" step="1" value={hoursWorked} onChange={(e) => setHoursWorked(e.target.value)} className="form-input h-11 px-3 text-sm" />
                   </div>
                 </div>
               ) : (
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-[#123C32]">Gross pay for this period</label>
-                  <input type="number" min="0" step="10" value={grossPay} onChange={(e) => setGrossPay(e.target.value)} className="form-input h-11 px-3 text-sm" />
+                  <label htmlFor="gross-pay" className="mb-2 block text-sm font-semibold text-[#123C32]">Gross pay for this pay period</label>
+                  <input id="gross-pay" type="number" min="0" step="10" value={grossPay} onChange={(e) => setGrossPay(e.target.value)} className="form-input h-11 px-3 text-sm" />
                 </div>
               )}
 
               <div>
-                <label className="mb-2 block text-sm font-semibold text-[#123C32]">Pay frequency</label>
-                <select value={payFrequency} onChange={(e) => setPayFrequency(e.target.value)} className="form-input h-11 px-3 text-sm">
-                  <option value="weekly">Weekly</option>
-                  <option value="biweekly">Biweekly</option>
-                  <option value="monthly">Monthly</option>
-                </select>
+                <label htmlFor="federal-withholding" className="mb-2 block text-sm font-semibold text-[#123C32]">Federal income tax withheld (optional)</label>
+                <input id="federal-withholding" type="number" min="0" step="0.01" value={customFedWithholding} onChange={(e) => setCustomFedWithholding(e.target.value)} placeholder="Enter the amount from a paycheck" className="form-input h-11 px-3 text-sm" />
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-semibold text-[#123C32]">Custom federal withholding (optional)</label>
-                <input type="number" min="0" step="0.01" value={customFedWithholding} onChange={(e) => setCustomFedWithholding(e.target.value)} placeholder="Leave blank for the educational estimate" className="form-input h-11 px-3 text-sm" />
+                <label htmlFor="state-withholding" className="mb-2 block text-sm font-semibold text-[#123C32]">State income tax withheld (optional)</label>
+                <input id="state-withholding" type="number" min="0" step="0.01" value={customStateWithholding} onChange={(e) => setCustomStateWithholding(e.target.value)} placeholder="Enter the amount from a paycheck" className="form-input h-11 px-3 text-sm" />
               </div>
 
               {validationMessage && (
@@ -148,7 +146,7 @@ export default function PaycheckPage() {
             <div className="mb-5 flex items-center justify-between gap-3 border-b border-[#E8EDE7] pb-4">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#6F7C74]">Results</p>
-                <h2 className="mt-1 text-2xl font-black tracking-[-0.04em] text-[#123C32]">Estimated paycheck</h2>
+                <h2 className="mt-1 text-2xl font-black tracking-[-0.04em] text-[#123C32]">Simplified paycheck model</h2>
               </div>
               <span className="rounded-full bg-[#EAF7F3] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[#176B52]">
                 Educational estimate
@@ -161,8 +159,11 @@ export default function PaycheckPage() {
                 <p className="mt-2 text-3xl font-black tracking-[-0.05em] text-[#123C32]">${result.grossPay.toFixed(2)}</p>
               </div>
               <div className="rounded-[1.5rem] border border-[#CDE7D7] bg-[#EAF7F3] p-4">
-                <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#176B52]">Take-home pay</p>
-                <p className="mt-2 text-3xl font-black tracking-[-0.05em] text-[#176B52]">${result.takeHomePay.toFixed(2)}</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#176B52]">
+                  {result.takeHomePay === null ? "After known deductions only" : "After entered deductions"}
+                </p>
+                <p className="mt-2 text-3xl font-black tracking-[-0.05em] text-[#176B52]">${(result.takeHomePay ?? result.remainingAfterEnteredDeductions).toFixed(2)}</p>
+                {result.takeHomePay === null && <span className="mt-1 block text-xs text-[#6F7C74]">Not actual take-home pay; federal or state withholding is missing.</span>}
               </div>
             </div>
 
@@ -179,14 +180,14 @@ export default function PaycheckPage() {
                 </div>
                 <div className="flex items-center justify-between border-b border-[#E8EDE7] pb-2">
                   <span>Federal withholding</span>
-                  <strong className="text-[#123C32]">-${result.breakdown.federalWithholding.toFixed(2)}</strong>
+                  <strong className="text-[#123C32]">{result.breakdown.federalWithholding === null ? "Not entered" : `-$${result.breakdown.federalWithholding.toFixed(2)}`}</strong>
                 </div>
                 <div className="flex items-center justify-between border-b border-[#E8EDE7] pb-2">
                   <span>State withholding</span>
-                  <strong className="text-[#123C32]">-${result.breakdown.stateWithholding.toFixed(2)}</strong>
+                  <strong className="text-[#123C32]">{result.breakdown.stateWithholding === null ? "Not entered" : `-$${result.breakdown.stateWithholding.toFixed(2)}`}</strong>
                 </div>
                 <div className="flex items-center justify-between pt-1">
-                  <span className="font-bold text-[#123C32]">Total deductions</span>
+                  <span className="font-bold text-[#123C32]">FICA + entered withholding</span>
                   <strong className="text-[#123C32]">-${result.totalDeductions.toFixed(2)}</strong>
                 </div>
               </div>
