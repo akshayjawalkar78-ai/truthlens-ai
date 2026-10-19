@@ -8,7 +8,7 @@ export function Footer() {
           <div className="space-y-2 md:col-span-2">
             <div className="flex items-center space-x-2">
               <span className="font-bold text-slate-900 text-sm">FirstFile</span>
-              <span className="text-[10px] bg-slate-100 text-slate-700 font-semibold px-2 py-0.5 rounded border border-slate-200">
+              <span className="text-[10px] bg-primary-100 text-primary-700 font-semibold px-2 py-0.5 rounded border border-primary-200">
                 Open Educational Tool
               </span>
             </div>
