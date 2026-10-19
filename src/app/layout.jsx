@@ -1,12 +1,12 @@
 export const metadata = {
-  title: "FirstFile — Your First Tax Return, Simplified",
-  description: "Free, teen-first tax education platform helping student workers and first-time filers understand tax withholding and build their filing readiness checklist.",
+  title: "FirstFile — Your first tax return. A clearer first step.",
+  description: "FirstFile helps teens and first-time filers understand taxes through friendly learning tools, sample forms, checklists, and official resources.",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className="min-h-screen bg-background text-foreground antialiased selection:bg-primary-600 selection:text-white">
+    <html lang="en" className="h-full bg-[#FAF9F6]">
+      <body className="min-h-full bg-background text-foreground antialiased selection:bg-primary-500/20 selection:text-foreground">
         {children}
       </body>
     </html>
