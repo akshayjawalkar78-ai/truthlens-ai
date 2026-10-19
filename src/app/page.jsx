@@ -64,7 +64,7 @@ export default function HomePage() {
       {/* Editorial Hero Section */}
       <section className="mb-12 border-b border-slate-200 pb-10">
         <div className="max-w-3xl">
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-slate-200 text-slate-800 text-[11px] font-semibold mb-3">
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-primary-100 text-primary-800 text-[11px] font-semibold mb-3">
             <span>Tax Year 2024 / 2025</span>
             <span>•</span>
             <span>First-Time Filer Readiness</span>
