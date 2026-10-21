@@ -53,7 +53,7 @@ export function queryTaxExplanation(query = "") {
 
   if (cleanQuery.includes("1099") || cleanQuery.includes("gig") || cleanQuery.includes("tutor") || cleanQuery.includes("freelance")) {
     return {
-      answer: "If your work is self-employment, net earnings of $400 or more generally trigger a federal filing requirement and self-employment tax. The standard rate is 15.3% for Social Security and Medicare, but special rules and exceptions can apply. A 1099 form is not required to report taxable income.",
+      answer: "If your work is self-employment, net earnings of $400 or more generally mean you must file a federal return and pay self-employment tax. The 15.3% Social Security and Medicare rate generally applies to 92.35% of net earnings—not to gross payments. Income tax is a separate calculation, and special rules can apply. A 1099 form is not required to report taxable income.",
       sourceTitle: "IRS Self-Employment Tax Guide",
       sourceUrl: "https://www.irs.gov/businesses/small-businesses-self-employed/self-employment-tax-social-security-and-medicare-taxes",
       confidenceLabel: "reviewed",

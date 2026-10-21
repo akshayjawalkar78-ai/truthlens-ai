@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AppShell } from "../components/AppShell.jsx";
+import { DocumentOrganizer } from "../components/DocumentOrganizer.jsx";
 import { PRELOADED_SCENARIOS } from "../data/scenarios.js";
 import { generateChecklist } from "../lib/checklist.js";
 import { QUIZ_RESULT_STORAGE_KEY } from "../lib/quiz.js";
@@ -49,7 +50,7 @@ export default function HomePage() {
     documents: ["w2"],
     dependentStatus: "yes",
     multipleIncome: "no",
-    state: "CA",
+    state: "",
     uncertainties: [],
   };
 
@@ -140,7 +141,7 @@ export default function HomePage() {
           <div>
             <span className="section-kicker">Taxes, made less intimidating</span>
             <h1 className="mt-5 max-w-xl text-4xl font-black tracking-[-0.06em] text-[#123C32] sm:text-5xl">
-              Your first tax return. A clearer first step.
+              The field guide to your first tax return.
             </h1>
             <p className="mt-5 max-w-xl text-base leading-7 text-[#41514A]">
               FirstFile helps students and first-time filers understand forms, paychecks, deductions, and filing basics through practical checklists, examples, and official guidance.
@@ -236,6 +237,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <DocumentOrganizer />
 
       <section className="mt-16">
         <div className="mb-6 flex items-end justify-between gap-4">
@@ -510,8 +513,9 @@ export default function HomePage() {
                     </div>
                   </div>
                   <div>
-                    <label className="mb-2 block text-sm font-semibold text-[#123C32]">State of tax residence</label>
-                    <select value={answers.state} onChange={(e) => handleUpdateAnswer("state", e.target.value)} className="form-input h-11 px-3 text-sm">
+                    <label htmlFor="state-of-residence" className="mb-2 block text-sm font-semibold text-[#123C32]">State of tax residence (optional)</label>
+                    <select id="state-of-residence" value={answers.state} onChange={(e) => handleUpdateAnswer("state", e.target.value)} className="form-input h-11 px-3 text-sm" aria-describedby="state-of-residence-hint">
+                      <option value="">Choose a state or leave blank</option>
                       <option value="CA">California</option>
                       <option value="TX">Texas</option>
                       <option value="NY">New York</option>
@@ -521,6 +525,9 @@ export default function HomePage() {
                       <option value="PA">Pennsylvania</option>
                       <option value="OTHER">Other</option>
                     </select>
+                    <p id="state-of-residence-hint" className="mt-2 text-xs leading-5 text-[#6F7C74]">
+                      Selecting a state adds a reminder to check its official guidance. FirstFile does not determine state filing requirements.
+                    </p>
                   </div>
                 </div>
               </div>

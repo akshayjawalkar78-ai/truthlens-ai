@@ -1,6 +1,34 @@
 import { expect, test } from "@playwright/test";
 import { QUIZ_QUESTIONS } from "../../src/data/quiz.js";
 
+test("onboarding keeps multiple income answers when navigating back", async ({ page }) => {
+  await page.goto("/");
+
+  const incomeTypes = [
+    "Hourly or salaried wages from a job",
+    "Independent work, tutoring, or gig jobs",
+    "Online sales or creative side work",
+    "Not sure yet / exploring future income",
+  ];
+  for (const incomeType of incomeTypes) {
+    await page.getByRole("checkbox", { name: incomeType }).check();
+  }
+
+  await page.getByRole("button", { name: "Next step" }).click();
+  await expect(page.getByText("Step 2 of 4")).toBeVisible();
+  await page.getByRole("button", { name: "← Previous" }).click();
+  for (const incomeType of incomeTypes) {
+    await expect(page.getByRole("checkbox", { name: incomeType })).toBeChecked();
+  }
+  for (let step = 0; step < 3; step += 1) {
+    await page.getByRole("button", { name: "Next step" }).click();
+  }
+  const state = page.getByLabel("State of tax residence (optional)");
+  await expect(state).toHaveValue("");
+  await state.selectOption("FL");
+  await expect(state).toHaveValue("FL");
+});
+
 test("finishing the quiz shows real results and saves them to the learning guide", async ({ page }) => {
   await page.goto("/learn?tab=quiz");
   await expect(page.getByRole("heading", { name: "Tax glossary & scenario quiz" })).toBeVisible();

@@ -11,8 +11,8 @@ export const QUIZ_QUESTIONS = [
     ],
     correctIndex: 1,
     explanation: "For 2024, these wages alone were below the applicable earned-income filing threshold for a dependent. Other income or special rules can change the result. If her final federal income tax is less than the $210 withheld, filing a return is generally how she would claim the overpayment; the exact refund depends on the complete return.",
-    sourceTitle: "IRS Publication 501: Who Must File",
-    sourceUrl: "https://www.irs.gov/publications/p501"
+    sourceTitle: "IRS Publication 501 (2024): Who Must File",
+    sourceUrl: "https://www.irs.gov/pub/irs-prior/p501--2024.pdf"
   },
   {
     id: "quiz-2",
@@ -25,7 +25,7 @@ export const QUIZ_QUESTIONS = [
       "He must ask his school to issue a Form 1099 before he can report any earnings."
     ],
     correctIndex: 1,
-    explanation: "Net earnings from self-employment of $400 or more generally require filing a federal return and calculating self-employment tax. A 1099 is not required to report income. The standard self-employment tax rate is 15.3%, subject to applicable rules and exceptions.",
+    explanation: "Net earnings from self-employment of $400 or more generally require filing a federal return and calculating self-employment tax. A 1099 is not required to report income. The 15.3% Social Security and Medicare rate generally applies to 92.35% of net earnings, not directly to gross payments; income tax is separate and exceptions may apply.",
     sourceTitle: "IRS Topic No. 554: Self-Employment Tax",
     sourceUrl: "https://www.irs.gov/taxtopics/tc554"
   },
@@ -51,11 +51,11 @@ export const QUIZ_QUESTIONS = [
     options: [
       "A government bonus reward for being an employed student.",
       "Interest earned on the wages she deposited throughout the year.",
-      "A return of her own money that was over-withheld from her paychecks.",
+      "Payments (including withholding) and refundable credits exceeded her total tax.",
       "Free grant money provided by the state Department of Revenue."
     ],
     correctIndex: 2,
-    explanation: "A refund occurs when payments and refundable credits exceed total tax. Withholding is one possible payment, but the question does not establish the exact source of Chloe's refund.",
+    explanation: "A refund generally means the payments credited to the return and refundable credits were more than the total tax. Withholding is one possible payment, so a refund is not necessarily only money withheld from a paycheck.",
     sourceTitle: "IRS Where's My Refund Guide",
     sourceUrl: "https://www.irs.gov/refunds"
   },

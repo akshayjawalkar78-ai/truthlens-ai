@@ -12,7 +12,7 @@ const privacyPrinciples = [
   },
   {
     title: "Local browser storage",
-    body: "Checklist progress and quiz-score summaries are saved in this browser's local storage so they remain available on this device. They are not sent to a FirstFile account or database. Clearing this browser's site data removes them.",
+    body: "Checklist progress, quiz-score summaries, and document-organizer status selections are saved in this browser's local storage so they remain available on this device. The organizer stores only whether an item is still to check, found, or not applicable—not documents, amounts, or identifiers. This information is not sent to a FirstFile account or database. Clearing this browser's site data removes it.",
   },
   {
     title: "Optional AI explanations",

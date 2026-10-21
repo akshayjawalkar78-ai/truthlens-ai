@@ -15,8 +15,8 @@ export const GLOSSARY_TERMS = [
     definition: "The amount paid to you after the deductions and withholdings on that paycheck are subtracted from gross pay.",
     whyItMatters: "This is your real spending and savings budget. Understanding deductions helps explain why net pay is lower than your hourly rate times hours worked.",
     example: "Gross earnings of $400 minus $30 federal tax, $24.80 Social Security, and $5.80 Medicare leaves $339.40 take-home pay.",
-    sourceTitle: "Consumer Financial Protection Bureau — Understanding Your Paycheck",
-    sourceUrl: "https://www.consumerfinance.gov",
+    sourceTitle: "IRS Topic No. 751: Social Security and Medicare Withholding Rates",
+    sourceUrl: "https://www.irs.gov/taxtopics/tc751",
     taxYear: "2024 / 2025"
   },
   {
@@ -112,12 +112,12 @@ export const GLOSSARY_TERMS = [
   {
     id: "self-employment-tax",
     term: "Self-Employment Tax (SECA)",
-    definition: "A tax that generally applies to net earnings from self-employment. The standard rate is 15.3% (12.4% Social Security plus 2.9% Medicare), subject to limits and special rules.",
-    whyItMatters: "Net self-employment earnings of $400 or more generally trigger a filing requirement for self-employment tax. Income tax and self-employment tax are separate calculations.",
-    example: "A freelancer's net profit is not the same as gross payments. Business expenses and tax rules affect the amount used to calculate self-employment tax.",
+    definition: "A Social Security and Medicare tax that generally applies to self-employment earnings. The 15.3% rate generally applies to 92.35% of net earnings, not gross payments; limits and special rules can change the calculation.",
+    whyItMatters: "Net self-employment earnings of $400 or more generally mean you must file a federal return and pay self-employment tax. Income tax and self-employment tax are separate calculations.",
+    example: "A freelancer's net profit is not the same as gross payments. Ordinary and necessary business expenses affect net earnings, and the IRS generally applies the 15.3% rate to 92.35% of those net earnings.",
     sourceTitle: "IRS Self-Employment Tax (Social Security and Medicare Taxes)",
     sourceUrl: "https://www.irs.gov/businesses/small-businesses-self-employed/self-employment-tax-social-security-and-medicare-taxes",
-    taxYear: "2024 / 2025"
+    taxYear: "General concept; check current IRS rules"
   },
   {
     id: "social-security-tax",

@@ -4,9 +4,9 @@ export const OFFICIAL_RESOURCES = [
     title: "IRS Free File Program",
     category: "Filing Tools",
     url: "https://www.irs.gov/file-your-taxes-for-free",
-    description: "The current IRS page lists an Adjusted Gross Income (AGI) limit of $89,000 or below for Guided Tax. Partner-specific eligibility rules apply.",
+    description: "IRS Free File availability and eligibility change by filing season. Check whether the program is open, review current IRS eligibility information, and confirm the selected provider's rules.",
     whyYouNeedIt: "Use the IRS partner-selection tool and read the offer details. Some partners provide a free state return; availability varies by partner and state.",
-    taxYear: "Check eligibility for the current filing season"
+    taxYear: "Availability and eligibility change each filing season; verify current IRS guidance."
   },
   {
     id: "irs-pub-17",

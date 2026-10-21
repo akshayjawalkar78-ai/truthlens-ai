@@ -34,8 +34,8 @@ export function generateChecklist(answers = {}) {
       category: "Documents",
       description: "Employers generally furnish Form W-2 by January 31 of the following year. Check your work email, employee portal, or mailbox; timing can vary in some circumstances.",
       status: "action-required",
-      whyItMatters: "Box 1 (total wages) and Box 2 (federal tax withheld) are the two primary numbers needed to file your Form 1040.",
-      actionLink: "/practice?tab=w2-lab",
+      whyItMatters: "Box 1 reports wages and Box 2 reports federal income tax withheld. Other information and documents may also matter for a complete return.",
+      actionLink: "/practice",
       actionText: "Practice Reading a Sample W-2"
     });
   }
@@ -115,7 +115,7 @@ export function generateChecklist(answers = {}) {
     id: "use-irs-free-file",
     title: "Check IRS Free File Eligibility",
     category: "Software Tools",
-    description: "The current IRS Free File page lists an AGI limit of $89,000 or below for Guided Tax. Partner eligibility rules vary, and free state-return availability depends on the partner and state.",
+    description: "IRS Free File availability and eligibility change by filing season. Check whether the program is open, review the current IRS eligibility information, and confirm the selected provider's rules and any state-return fees.",
     status: "recommendation",
     whyItMatters: "Use the IRS partner-selection tool and read the selected offer's eligibility and fees before starting. IRS Free File is separate from commercial products outside the program.",
     actionLink: "https://www.irs.gov/file-your-taxes-for-free",
